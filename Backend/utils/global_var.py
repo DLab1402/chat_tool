@@ -1,18 +1,18 @@
 import os
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-BACKEND_DIR = os.path.abspath(os.path.join(CURRENT_DIR, "..", ".."))
-OCR_DIR = BACKEND_DIR = os.path.abspath(os.path.join(CURRENT_DIR, "..", "..",".."))
+BACKEND_DIR = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
+OCR_DIR = os.path.abspath(os.path.join(CURRENT_DIR,".."))
+UPLOAD_DIR = os.path.join(BACKEND_DIR, "Backend","Upload_data")
 
 import pytesseract
 
 pytesseract.pytesseract.tesseract_cmd = os.path.join(OCR_DIR, "OCR","tesseract.exe")
 session_folders = {}
-UPLOAD_DIR = os.path.join(BACKEND_DIR, "Backend","Upload_data")
 
 # AGENT_API_KEY = "AIzaSyDRX2Ru21b-vy-cFkQZjI4fxPHxOwfPfig"
 AGENT_API_KEY = "AIzaSyBLH04Gkgnr_vXvZtuGowwhNedpE_--xxs"
 
-TEMPLATE_PATH = os.path.join(BACKEND_DIR, "Backend","utils","Bảng đối chiếu quy hoạch.docx")
+TEMPLATE_PATH = os.path.join(CURRENT_DIR, "Backend","utils","Bảng đối chiếu quy hoạch.docx")
 
 import socket
 
