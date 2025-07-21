@@ -1,12 +1,13 @@
 import os
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 BACKEND_DIR = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
-OCR_DIR = os.path.abspath(os.path.join(CURRENT_DIR,".."))
-UPLOAD_DIR = os.path.join(BACKEND_DIR, "Backend","Upload_data")
-
+OCR_DIR = os.path.abspath(os.path.join(CURRENT_DIR,"..","..",".."))
+UPLOAD_DIR = os.path.join(BACKEND_DIR,"Upload_data")
+print(os.path.join(OCR_DIR, "OCR","tesseract.exe"))
 import pytesseract
 
 pytesseract.pytesseract.tesseract_cmd = os.path.join(OCR_DIR, "OCR","tesseract.exe")
+
 session_folders = {}
 
 # AGENT_API_KEY = "AIzaSyDRX2Ru21b-vy-cFkQZjI4fxPHxOwfPfig"
