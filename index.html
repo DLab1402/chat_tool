@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Zoom + Pan + Reset</title>
+  <style>
+    .container {
+      width: 90vw;
+      height: 90vh;
+      overflow: hidden;
+      border: 1px solid #ccc;
+      background-color: #f0f0f0;
+      position: relative;
+      cursor: grab;
+    }
+
+    .image-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform-origin: top left;
+      transition: transform 0.1s ease-out;
+    }
+
+    .reset-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid #888;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-size: 14px;
+      border-radius: 5px;
+      z-index: 10;
+    }
+
+    img {
+      display: block;
+      max-width: none;
+      max-height: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container" id="zoom-container">
+  <div class="reset-button" onclick="resetZoom()">Reset</div>
+  <div class="image-wrapper" id="img-wrapper">
+    <img id="zoom-img" src="D:\coco128\images\train2017\000002.jpg" alt="Zoomable Image">
+  </div>
+</div>
+
+<script>
+  const container = document.getElementById('zoom-container');
+  const wrapper = document.getElementById('img-wrapper');
+
+  let scale = 1;
+  let originX = 0;
+  let originY = 0;
+
+  let isDragging = false;
+  let startX, startY;
+
+  // Zoom on wheel
+  container.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const delta = e.deltaY < 0 ? 0.1 : -0.1;
+    const newScale = Math.min(Math.max(scale + delta, 0.1), 5);
+    const rect = wrapper.getBoundingClientRect();
+
+    // Adjust origin to zoom around mouse pointer
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    originX -= (mouseX / scale) * delta;
+    originY -= (mouseY / scale) * delta;
+
+    scale = newScale;
+    updateTransform();
+  });
+
+  // Drag to pan
+  container.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    container.style.cursor = 'grabbing';
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const dx = (e.clientX - startX) / scale;
+    const dy = (e.clientY - startY) / scale;
+    originX += dx;
+    originY += dy;
+    startX = e.clientX;
+    startY = e.clientY;
+    updateTransform();
+  });
+
+  window.addEventListener('mouseup', () => {
+    isDragging = false;
+    container.style.cursor = 'grab';
+  });
+
+  // Reset zoom & position
+  function resetZoom() {
+    scale = 1;
+    originX = 0;
+    originY = 0;
+    updateTransform();
+  }
+
+  function updateTransform() {
+    wrapper.style.transform = `translate(${originX}px, ${originY}px) scale(${scale})`;
+  }
+</script>
+
+</body>
+</html>

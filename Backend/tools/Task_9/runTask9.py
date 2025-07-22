@@ -19,9 +19,10 @@ def runTask9(session_dir, single=True):
         return "Không tìm thấy file DXF cho task9"
     dxf_file = dxf_files[0]
     
-    output_file = os.path.join(output_folder, "Task_9.png")
+    output_file1 = os.path.join(output_folder, "Task_9.png")
+    output_file2 = os.path.join(output_folder, "map_Task_9.png")
     try:
-        result = draw_trucuuhoa_distances(dxf_file, output_file)
+        result = draw_trucuuhoa_distances(dxf_file, output_file1, output_file2)
     except Exception as e:
         return f"Error: {e}"
 

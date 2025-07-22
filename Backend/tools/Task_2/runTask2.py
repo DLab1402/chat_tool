@@ -9,6 +9,7 @@ from utils.decorator import dict_to_chat_html_with_cv2_image
 from tools.Task_2.Task2_1 import process_image_pipeline
 from tools.Task_2.Task2_2 import detect_parking_areas
 from tools.Task_2.scale_ratio import convert_dxf_to_png_scale_ratio
+from tools.Task_2.Task2_2new import detect 
 
 def runTask2(session_dir, single=True):
     input_folder = os.path.join(session_dir, "input")
@@ -54,7 +55,7 @@ def runTask2(session_dir, single=True):
         # Xử lý đường nội bộ
         duong_img, text = process_image_pipeline(image_path, binary_path)
         # Xử lý bãi đỗ xe
-        num_parking, widths, bai_do_img = detect_parking_areas(image_path, ratio)
+        num_parking, widths, bai_do_img = detect(image_path, ratio)
     except Exception as e:
         return f"Error: {e}"
 
@@ -75,7 +76,7 @@ def runTask2(session_dir, single=True):
     else:
         text_lines.append(f"Số bãi đỗ xe detect được: {num_parking}")
         for i, w in enumerate(widths):
-            text_lines.append(f"- Độ rộng của bãi #{i+1}: {w*ratio:.2f} mét")
+            text_lines.append(f"- Độ rộng của bãi #{i+1}: {w:.2f} mét")
 
     # Hiển thị cả hai ảnh nếu có
     result = {"Kết quả": '<br>'.join(text_lines)}

@@ -19,7 +19,7 @@ def runTask1n12(session_dir, single = True):
     dxf_file = dxf_files[0]
     
     try:
-        result = process_single_dxf(dxf_file, process_folder, output_folder)
+        result = process_single_dxf(dxf_file, image_folder=process_folder, result_folder=output_folder)
     except Exception as e:
         return f"Error: {e}"
 

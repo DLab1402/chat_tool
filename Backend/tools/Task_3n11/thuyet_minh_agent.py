@@ -91,7 +91,7 @@ Bạn là chuyên gia kiểm tra thuyết minh xây dựng về phòng cháy ch�
 """
     for title in section_titles:
         prompt += f"[{title}]\n{sections.get(title, '')}\n\n"
-    prompt += "Kiểm tra xem trong dữ liệu trên có đề cập đến tải trọng nền đường cho xe, bãi đỗ hay không.\nNếu có thông tin về tải trọng nền đường cho xe, bãi đỗ hãy trích nguyên văn. Còn nếu không có thông tin thì cảnh báo không có."
+    prompt += "Kiểm tra xem trong dữ liệu trên có dữ liệu chính xác về tải trọng nền đường cho xe, bãi đỗ hay không. Nếu có số liệu về tải trọng nền đường cho xe, bãi đỗ hãy trích nguyên văn. Còn nếu không số liệu về tải trọng đó thì trả lời nguyên văn là Không có thông tin về tải trọng nền đường cho xe, bãi đỗ. Kết quả chỉ được dùng dấu chấm và dấu phẩy. Bạn phải xác định đúng từ khóa ở đây là tải trọng nền đường cho xe, bãi đỗ chứ không phải các từ khác."
     result = call_gemini(prompt)
     return result
 
@@ -123,7 +123,7 @@ Bạn là chuyên gia kiểm tra thuyết minh xây dựng về phòng cháy ch�
     for title in section_titles:
         prompt += f"[{title}]\n{sections.get(title, '')}\n\n"
     prompt += "Kiểm tra xem có đề cập đến lưu lượng nước (nhu cầu nước sinh hoạt, nhu cầu nước chữa cháy, tổng nhu cầu nước/ngày) hay không.\nNếu có thông tin về lưu lượng nước hãy liệt kê số liệu cụ thể. Nếu không có thông tin thì cảnh báo không có."
-    prompt += "Tôi muốn kết quả trả về của bạn được trình bày rõ ràng có xuống dòng, gạch đầu dòng và đề mục."
+    prompt += "Trình bày câu trả lời rõ ràng, không được thêm các dấu * hay -, chỉ dùng dấu . và dấu ,"
     result = call_gemini(prompt)
     return result
 

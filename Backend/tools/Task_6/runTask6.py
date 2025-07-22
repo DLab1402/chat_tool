@@ -229,30 +229,38 @@ def runTask6(session_dir, single=True):
 
     # Xây dựng result_str theo đúng logic in ra của example.py
     if not final_segments:
-        result_str = "Không có đoạn nội bộ nào cần kiểm tra<br>"
+        result_str_html = "Không có đoạn nội bộ nào cần kiểm tra<br>"
+        result_str_text = "Không có đoạn nội bộ nào cần kiểm tra\n"
     else:
-        result_str = "Các đoạn nội bộ cần kiểm tra:<br>"
+        result_str_html = "Các đoạn nội bộ cần kiểm tra:<br>"
+        result_str_text = "Các đoạn nội bộ cần kiểm tra:\n"
         for idx, ((x1, y1, x2, y2), length, width) in enumerate(final_segments):
-            result_str += f"Đoạn {idx+1}: ({x1},{y1})-({x2},{y2}) | Chiều dài: {(length*ratio):.1f}m | Chiều rộng: {(width*ratio):.1f}m<br>"
+            result_str_html += f"Đoạn {idx+1}: ({x1},{y1})-({x2},{y2}) | Chiều dài: {(length*ratio):.1f}m | Chiều rộng: {(width*ratio):.1f}m<br>"
+            result_str_text += f"Đoạn {idx+1}: ({x1},{y1})-({x2},{y2}) | Chiều dài: {(length*ratio):.1f}m | Chiều rộng: {(width*ratio):.1f}m\n"
 
     if not valid_boxes and not invalid_boxes:
-        result_str += "Không có đoạn tránh xe nào được phát hiện<br>"
+        result_str_html += "Không có đoạn tránh xe nào được phát hiện<br>"
+        result_str_text += "Không có đoạn tránh xe nào được phát hiện\n"
     else:
         if valid_boxes:
             for box in valid_boxes:
-                result_str += f"Đoạn tránh xe hợp lệ {box['id']} | Chiều dài: {(box['length']*ratio):.1f} | Chiều rộng: {(box['width']*ratio*0.8029):.1f}<br>"
+                result_str_html += f"Đoạn tránh xe hợp lệ {box['id']} | Chiều dài: {(box['length']*ratio):.1f} | Chiều rộng: {(box['width']*ratio*0.8029):.1f}<br>"
+                result_str_text += f"Đoạn tránh xe hợp lệ {box['id']} | Chiều dài: {(box['length']*ratio):.1f} | Chiều rộng: {(box['width']*ratio*0.8029):.1f}\n"
         else:
-            result_str += "Không có đoạn tránh xe hợp lệ nào<br>"
+            result_str_html += "Không có đoạn tránh xe hợp lệ nào<br>"
+            result_str_text += "Không có đoạn tránh xe hợp lệ nào\n"
         if invalid_boxes:
             for box in invalid_boxes:
-                result_str += f"Đoạn tránh xe không hợp lệ {box['id']} | Chiều dài: {(box['length']*ratio):.1f} | Chiều rộng: {(box['width']*ratio*0.8029):.1f}<br>"
+                result_str_html += f"Đoạn tránh xe không hợp lệ {box['id']} | Chiều dài: {(box['length']*ratio):.1f} | Chiều rộng: {(box['width']*ratio*0.8029):.1f}<br>"
+                result_str_text += f"Đoạn tránh xe không hợp lệ {box['id']} | Chiều dài: {(box['length']*ratio):.1f} | Chiều rộng: {(box['width']*ratio*0.8029):.1f}\n"
         else:
-            result_str += "Không có đoạn tránh xe không hợp lệ nào<br>"
+            result_str_html += "Không có đoạn tránh xe không hợp lệ nào<br>"
+            result_str_text += "Không có đoạn tránh xe không hợp lệ nào\n"
 
     if single:
-        html = dict_to_chat_html_with_cv2_image({"Kết quả": result_str, "image": result_img})
+        html = dict_to_chat_html_with_cv2_image({"Kết quả": result_str_html, "image": result_img})
         return html
 
-    return result_str
+    return result_str_text
 
     

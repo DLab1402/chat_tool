@@ -14,7 +14,7 @@ layers_to_extract=['TAD - TEXT',
                     # 'xref_bct2_tong the$0$2_Visible line'
                     # 'BCP_MD_Xref_MBTT$0$$0$QH_DAT_NO_Nhaochungcu' #do an 5
                     ]
-layers_block=['QH_DAT_NO_Nhaochungcu']
+layers_block=['QH_DAT_NO_Nhaochungcu','2_Visible line',]
 layers_rg_qh=['BV_Rg_lapquyhoach',
                 'QH_Ranh giới lập quy hoạch' #do an 2'
                 # 'BCP_MD_Xref_Ranhdat$0$BV_Rg_lapquyhoach'   #do an 5
@@ -208,7 +208,8 @@ def convert_dxf_to_png(dxf_file, output_dir, target_entity_types, layers_to_extr
     def filter_entities(entity):
         """Filter function for matplotlib rendering"""
         return entity.dxftype() in target_entity_types and (entity.dxf.layer in layers_to_extract 
-                                                            or entity.dxf.layer.endswith(layers_block[0]))
+                                                            or entity.dxf.layer.endswith(layers_block[0])
+                                                            or entity.dxf.layer.endswith(layers_block[1]))
     # Read DXF and process
     doc = ezdxf.readfile(dxf_file)
     msp = doc.modelspace()
@@ -220,7 +221,7 @@ def convert_dxf_to_png(dxf_file, output_dir, target_entity_types, layers_to_extr
     max_area=0
     max_bbox=tuple()
     for entity in msp:
-        if entity.dxftype()=='LWPOLYLINE' and entity.dxf.layer.endswith(layers_rg_qh[0]):
+        if entity.dxftype()=='LWPOLYLINE' and entity.dxf.layer.endswith(layers_rg_qh[1]):
             area,height,width,bbox=get_lwpolyline_bounding_box(entity)
             if area >max_area:
                 max_area=area
@@ -233,7 +234,7 @@ def convert_dxf_to_png(dxf_file, output_dir, target_entity_types, layers_to_extr
     matplotlib.qsave(msp, output_dir,dpi=1400, bg=bg, filter_func=filter_entities,backend='svg')
     output_image,width_pixel,height_pixel=get_contour_size(output_dir)
     #Get the ratio
-    scale_factor = height/float(height_pixel)
+    scale_factor = max_height/float(height_pixel)
     print(f"Scale factor is: {scale_factor}")
     return output_image,scale_factor, f'PNG file saved to {output_dir}'   
 
@@ -257,7 +258,7 @@ def calculate_contour_areas(contours):
         area = cv2.contourArea(contour)
         areas.append(area)
     return areas
-def process_single_dxf(dxf_path, output_folder=None):
+def process_single_dxf(dxf_path, image_folder=None, result_folder=None):
     """
     Process a single DXF file to calculate shortest distances between contours.
     
@@ -279,21 +280,16 @@ def process_single_dxf(dxf_path, output_folder=None):
     
     # Setup output folder
     base_name = os.path.splitext(os.path.basename(dxf_path))[0]
-    if output_folder is None:
-        output_folder = f"./result_{base_name}"
+    if not result_folder:
+        result_folder = os.path.join(os.path.dirname(dxf_path), 'results')
+    if not image_folder:
+        image_folder = os.path.join(os.path.dirname(dxf_path), 'images')
 
-    # Create output subfolders
-    image_folder = os.path.join(output_folder, 'images')
-    result_folder = os.path.join(output_folder, 'results')
-    
-    for folder in [image_folder, result_folder]:
-        if not os.path.exists(folder):
-            os.makedirs(folder)
-    
+
     print(f"\nProcessing DXF file: {os.path.basename(dxf_path)}")
     
     # Export image for distance calculation
-    output_image_path = os.path.join(image_folder, f"{base_name}.png")
+    output_image_path = os.path.join(image_folder, "Task_1_12.png")
     image, scale_factor, _ =convert_dxf_to_png(dxf_file=dxf_path,output_dir=output_image_path,
                                       target_entity_types=target_entity_types,
                                       layers_to_extract=layers_to_extract)
@@ -318,7 +314,7 @@ def process_single_dxf(dxf_path, output_folder=None):
     pairwise_distances = compute_pairwise_distances(filtered_contours,scale_factor)
     draw_pairwise_lines(output_image, pairwise_distances, colors)
     # Save output image
-    output_filename = f"output_{base_name}.png"
+    output_filename = f"Task_1_12.png"
     output_path = os.path.join(result_folder, output_filename)
     save_image(output_image, output_path)
     print(f"✅ Saved result to: {output_path}")
@@ -327,10 +323,10 @@ def process_single_dxf(dxf_path, output_folder=None):
     distance_results = print_pairwise_distances(pairwise_distances)
     area_results = format_area_results(filtered_contours, contour_areas,scale_factor)
     return {
-        'output_path': output_path,
-        'distance_pairwise': distance_results,
-        'area': area_results,
-        'contours_count': len(filtered_contours)
+        'Khoảng cách giữa các khối nhà': distance_results,
+        'Diện tích': area_results,
+        'contours_count': len(filtered_contours),
+        'Hình ảnh': output_image 
     }
 if __name__ == "__main__":
     # Example usage for single DXF file

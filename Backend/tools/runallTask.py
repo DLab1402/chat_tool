@@ -11,15 +11,17 @@ import json
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from utils.global_var import TEMPLATE_PATH, AGENT_API_KEY,FORNTEND_IP, FRONTEND_PORT
-from utils.output_collector import output_collector, llm_compare_func_gemini_task1, llm_compare_func_gemini_task3, llm_compare_func_gemini_task4, llm_compare_func_gemini_task5, llm_compare_func_gemini_task6, llm_compare_func_gemini_task9, llm_compare_func_gemini_task11, llm_compare_func_gemini_task12, llm_compare_func_gemini_task13
+from utils.output_collector import output_collector, llm_compare_func_gemini_task1, llm_compare_func_gemini_task2, llm_compare_func_gemini_task3, llm_compare_func_gemini_task4, llm_compare_func_gemini_task5, llm_compare_func_gemini_task6, llm_compare_func_gemini_task9, llm_compare_func_gemini_task11, llm_compare_func_gemini_task12, llm_compare_func_gemini_task13
 
 from tools.Task_1n12.runTask1n12 import runTask1n12
 from tools.Task_3n11.runTask3 import runTask3
 from tools.Task_4.runTask4 import runTask4
-from tools.Task_3n11.runTask11 import runTask11
-from tools.Task_13.runTask13 import runTask13
-from tools.Task_9.runTask9 import runTask9
+from tools.Task_5.runTask5 import runTask5
 from tools.Task_6.runTask6 import runTask6
+from tools.Task_9.runTask9 import runTask9
+from tools.Task_3n11.runTask11 import runTask11
+from tools.Task_2.runTask2 import runTask2
+from tools.Task_13.runTask13 import runTask13
 
 API_KEY = AGENT_API_KEY
 
@@ -31,7 +33,7 @@ def runallTask(session_dir):
     #Task 1
     task1n12 = runTask1n12(session_dir, single = False)
     if isinstance(task1n12,dict):
-        task1_text = json.dumps(task1n12.get("Khoảng cách nhỏ nhất"), ensure_ascii=False, indent=2)
+        task1_text = json.dumps(task1n12.get("Khoảng cách giữa các khối nhà"), ensure_ascii=False, indent=2)
         task12_text = json.dumps(task1n12.get("Diện tích"), ensure_ascii=False, indent=2)
     else:
         task1_text = str(task1n12)
@@ -43,6 +45,21 @@ def runallTask(session_dir):
         OUTPUT_PATH,
         lambda res: llm_compare_func_gemini_task1(res, api_key=API_KEY),
         task="task1"
+    )
+
+    #Task 2
+    
+    task2 = runTask2(session_dir, single = False)
+    if isinstance(task2,dict):
+        task2_text = json.dumps(task2.get("Kết quả"), ensure_ascii=False, indent=2)
+    else:
+        task2_text = str(task2)
+    output_collector(
+        task2_text,
+        OUTPUT_PATH,
+        OUTPUT_PATH,
+        lambda res: llm_compare_func_gemini_task2(res, api_key=API_KEY),
+        task="task2"
     )
 
     #Task 3
@@ -68,6 +85,21 @@ def runallTask(session_dir):
         OUTPUT_PATH,
         lambda res: llm_compare_func_gemini_task4(res, api_key=API_KEY),
         task="task4"
+    )
+
+    #Task 5
+    task5 = runTask5(session_dir, single = False)
+    if isinstance(task5,dict):
+        task5_text = json.dumps(task5.get("Kết quả"), ensure_ascii=False, indent=2)
+    else:
+        task5_text = str(task5)
+
+    output_collector(
+        task5_text,
+        OUTPUT_PATH,
+        OUTPUT_PATH,
+        lambda res: llm_compare_func_gemini_task5(res, api_key=API_KEY),
+        task="task5"
     )
 
     #Task 6

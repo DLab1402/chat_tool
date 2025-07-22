@@ -2,16 +2,20 @@ import ezdxf
 import math
 import matplotlib.pyplot as plt
 import os
+from tools.Task_9.dxf_to_png import convert_dxf_to_png
 
-def draw_trucuuhoa_distances(input_filename, output_filename):
+layer_cuuhoa = "trucuuhoa"
+layer_to_check = [layer_cuuhoa, "xref_bct2_tong the$0$QH_DAT_CTHTKT_DuongGT"]
+
+def draw_trucuuhoa_distances(input_filename, output_filename1, output_filename2, layer_cuuhoa=layer_cuuhoa, layer_to_check=layer_to_check):
     # Load bản vẽ
     doc = ezdxf.readfile(input_filename)
     msp = doc.modelspace()
-
+    convert_dxf_to_png(doc, output_filename1, layer_to_check, dpi=300, output_prefix="")
     # Lưu tọa độ trụ cứu hỏa
     trucuuhoa_points = []
     for entity in msp:
-        if entity.dxf.layer == 'trucuuhoa' and entity.dxftype() == 'INSERT':
+        if entity.dxf.layer == layer_cuuhoa and entity.dxftype() == 'INSERT':
             pos = entity.dxf.insert
             trucuuhoa_points.append((pos.x, pos.y))
 
@@ -51,14 +55,17 @@ def draw_trucuuhoa_distances(input_filename, output_filename):
     plt.axis('off')  # Tắt trục tọa độ
 
     # Lưu hình
-    plt.savefig(output_filename, dpi=300, bbox_inches='tight')
+    plt.savefig(output_filename2, dpi=300, bbox_inches='tight')
     plt.close()
 
-    print(f"Đã lưu ảnh kết quả tại {output_filename}")
+    print(f"Đã lưu ảnh kết quả tại {output_filename2}")
     # Đọc lại ảnh bằng OpenCV để trả về đúng định dạng
     import cv2
-    img = cv2.imread(output_filename)
+
+    output_png = cv2.imread(output_filename1)
+    img = cv2.imread(output_filename2)
     return {
+        "Hình ảnh": output_png,
         "Số lượng trụ cứu hỏa": len(trucuuhoa_points),
         "Khoảng cách giữa các trụ": [f"Từ {item['from']} đến {item['to']}: {item['distance']:.2f} m" for item in distances],
         "image": img
