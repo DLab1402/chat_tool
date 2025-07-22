@@ -21,7 +21,7 @@
 </div>
 
 <!--Chat box-->
-<div class="chat-container" id="chat-box" style="width: 90%; margin-left: 25%; height: 100vh; display: flex; flex-direction: column;"> </div>
+<div class="chat-container" id="chat-box" style="width: 100%; margin-left: 30%; height: 100vh; display: flex; flex-direction: column;"> </div>
 <!-- Input -->
 <div class="input-wrapper">
   <form method="post" action="/chat" class="chat-form" id="chat-form">
@@ -104,6 +104,11 @@
         chatBox.innerHTML += `<div class="message ai">Error: ${result.file} hoặc không có file nào thỏa điều kiện.</div>`;
       }
   });
+
+  function resetZoom(containerId) {
+            const wrapper = document.querySelector(`#${containerId} .image-wrapper`);
+            wrapper.style.transform = 'scale(1)';
+  }
 
 </script>
 </body>
