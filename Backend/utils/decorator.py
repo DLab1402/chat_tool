@@ -31,14 +31,12 @@ def dict_to_chat_html_with_cv2_image(data: Dict[str, any]) -> str:
         if isinstance(value, np.ndarray):  # Last key is image
             html_lines.append(f'<div><strong>IMAGE:</strong></div>')
             img_b64 = cv2_image_to_base64(value)
-            html_lines.append(f'<div id = {str(timestamp)}><img src="{img_b64}" alt="{key}" style="max-width: 100%; height: auto;"></div>')
-            <div class="zoom-container" id="container-1">
-            <div class="reset-button" onclick="resetZoom('container-1')">Reset</div>
-            <div class="image-wrapper" id="img-wrapper-1">
-                <img id="zoom-img-1" src="..." />
-            </div>
-            </div>
-
+            html_lines.append(f'''<div id = "{timestamp}">
+                              <div id = "{timestamp}1"><img src="{img_b64}" alt="{key}" style="max-width: 100%; height: auto;"></div>
+                              </div>
+                              <script> 
+                              setupZoomPan("{timestamp}","{timestamp}1"); </script>''')
+                            #   <div class="reset-button" onclick="resetZoom({str(timestamp)})">Reset</div>
         else:
             if isinstance(value,list):
                 html_lines.append(f'<div><strong>{key}:</strong></div>')

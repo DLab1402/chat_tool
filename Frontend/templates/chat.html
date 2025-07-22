@@ -5,7 +5,8 @@
   <title>Chat Assistant</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/static/chat.css">
-  <script src = "scripts.js"></script>
+  <script src = "/static/scr.js"></script>
+
 </head>
 <body>
 
@@ -29,87 +30,5 @@
     <button type="submit">Send</button>
   </form>
 </div>
-
-<!-- Auto-expand & Submit -->
-<script>
-  const chatForm = document.getElementById("chat-form");
-  const chatBox = document.getElementById("chat-box");
-  const textarea = document.getElementById("message-input");
-
-  // Auto-expand textarea
-  textarea.addEventListener("input", () => {
-    textarea.style.height = "auto";
-    textarea.style.height = Math.min(textarea.scrollHeight, 180) + "px";
-  });
-
-  // Submit with Enter key
-  textarea.addEventListener("keydown", function (e) {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      chatForm.requestSubmit(); // Safer than form.submit()
-    }
-  });
-
-  // Handle form submission via Fetch API
-  chatForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const formData = new FormData(chatForm);
-    const message = formData.get("message");
-    
-    chatBox.innerHTML += `<div class="message user">${message}</div>`;
-
-    chatForm.reset();
-
-    const response = await fetch("/chat", {
-      method: "POST",
-      body: formData
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      chatBox.innerHTML += `${data.ai}`;
-    } else {
-      chatBox.innerHTML += `${response.statusText}`;
-    }
-
-    textarea.style.height = "auto";
-  });
-
-  //Upload files
-  document.getElementById("data-input").addEventListener("change", async function () {
-    const input = this;
-    const files = input.files;
-    const formData = new FormData();
-
-    for (const file of files) {
-      formData.append("files", file);
-    }
-
-      const response = await fetch("/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      const result = await response.json();
-
-      const uploaded = result.saved || result.file || [];
-      
-      if (uploaded.length > 0) {
-        const fileListHTML = uploaded.map(f => `<li>${f}</li>`).join("");
-        chatBox.innerHTML += `<div>
-          Các file được tải lên gồm:
-          <ul>${fileListHTML}</ul></div>`;
-        
-      } else {
-        chatBox.innerHTML += `<div class="message ai">Error: ${result.file} hoặc không có file nào thỏa điều kiện.</div>`;
-      }
-  });
-
-  function resetZoom(containerId) {
-            const wrapper = document.querySelector(`#${containerId} .image-wrapper`);
-            wrapper.style.transform = 'scale(1)';
-  }
-
-</script>
 </body>
 </html>
