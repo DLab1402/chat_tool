@@ -141,6 +141,35 @@ body {
   background: #2563eb;
 }
 
+.image_frame {
+  width: 90vw;
+  height: 90vh;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f0f0f0;
+  position: relative;
+  cursor: grab;
+}
+
+.image-wrapper {
+  display: inline-block;
+  transform-origin: center center;
+  transition: transform 0.1s;
+}
+
+.reset-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid #888;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 4px;
+  z-index: 10;
+  }
+
 @media (max-width: 600px) {
   .chat-form {
     flex-direction: column;

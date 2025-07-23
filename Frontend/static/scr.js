@@ -35,6 +35,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (response.ok) {
       const data = await response.json();
       chatBox.innerHTML += `${data.ai}`;
+      if ("id" in data){
+        setupZoomPan(`${data.id}`,`${data.id}1`)
+      }
     } else {
       chatBox.innerHTML += `${response.statusText}`;
     }
@@ -71,82 +74,83 @@ document.addEventListener("DOMContentLoaded", () => {
         chatBox.innerHTML += `<div class="message ai">Error: ${result.file} hoặc không có file nào thỏa điều kiện.</div>`;
       }
   });
+
+  const zoomStates = {};
+
+  function setupZoomPan(containerId, wrapperId) {
+    const container = document.getElementById(containerId);
+    const wrapper = document.getElementById(wrapperId);
+
+    if (!container || !wrapper) return;
+
+    let state = {
+      scale: 1,
+      originX: 0,
+      originY: 0,
+      isDragging: false,
+      startX: 0,
+      startY: 0
+    };
+
+    zoomStates[containerId] = state;
+
+    container.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const delta = e.deltaY < 0 ? 0.1 : -0.1;
+      const newScale = Math.min(Math.max(state.scale + delta, 0.1), 5);
+      const rect = wrapper.getBoundingClientRect();
+
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      state.originX -= (mouseX / state.scale) * delta;
+      state.originY -= (mouseY / state.scale) * delta;
+
+      state.scale = newScale;
+      updateTransform(containerId, wrapper);
+    });
+
+    container.addEventListener('mousedown', (e) => {
+      state.isDragging = true;
+      state.startX = e.clientX;
+      state.startY = e.clientY;
+      container.style.cursor = 'grabbing';
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!state.isDragging) return;
+      const dx = (e.clientX - state.startX) / state.scale;
+      const dy = (e.clientY - state.startY) / state.scale;
+      state.originX += dx;
+      state.originY += dy;
+      state.startX = e.clientX;
+      state.startY = e.clientY;
+      updateTransform(containerId, wrapper);
+    });
+
+    window.addEventListener('mouseup', () => {
+      state.isDragging = false;
+      container.style.cursor = 'grab';
+    });
+
+    // Initial apply
+    updateTransform(containerId, wrapper);
+  }
+
+  function updateTransform(containerId, wrapper) {
+    const state = zoomStates[containerId];
+    if (!state) return;
+    wrapper.style.transform = `translate(${state.originX}px, ${state.originY}px) scale(${state.scale})`;
+  }
+
+  function resetZoom(containerId) {
+    const state = zoomStates[containerId];
+    const wrapper = document.querySelector(`#${containerId} .image-wrapper`);
+    if (!state || !wrapper) return;
+    state.scale = 1;
+    state.originX = 0;
+    state.originY = 0;
+    updateTransform(containerId, wrapper);
+}
+
 });
-
-const zoomStates = {};
-
-function setupZoomPan(containerId, wrapperId) {
-  const container = document.getElementById(containerId);
-  const wrapper = document.getElementById(wrapperId);
-
-  if (!container || !wrapper) return;
-
-  let state = {
-    scale: 1,
-    originX: 0,
-    originY: 0,
-    isDragging: false,
-    startX: 0,
-    startY: 0
-  };
-
-  zoomStates[containerId] = state;
-
-  container.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    const delta = e.deltaY < 0 ? 0.1 : -0.1;
-    const newScale = Math.min(Math.max(state.scale + delta, 0.1), 5);
-    const rect = wrapper.getBoundingClientRect();
-
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-
-    state.originX -= (mouseX / state.scale) * delta;
-    state.originY -= (mouseY / state.scale) * delta;
-
-    state.scale = newScale;
-    updateTransform(containerId, wrapper);
-  });
-
-  container.addEventListener('mousedown', (e) => {
-    state.isDragging = true;
-    state.startX = e.clientX;
-    state.startY = e.clientY;
-    container.style.cursor = 'grabbing';
-  });
-
-  window.addEventListener('mousemove', (e) => {
-    if (!state.isDragging) return;
-    const dx = (e.clientX - state.startX) / state.scale;
-    const dy = (e.clientY - state.startY) / state.scale;
-    state.originX += dx;
-    state.originY += dy;
-    state.startX = e.clientX;
-    state.startY = e.clientY;
-    updateTransform(containerId, wrapper);
-  });
-
-  window.addEventListener('mouseup', () => {
-    state.isDragging = false;
-    container.style.cursor = 'grab';
-  });
-
-  // Initial apply
-  updateTransform(containerId, wrapper);
-}
-
-function updateTransform(containerId, wrapper) {
-  const state = zoomStates[containerId];
-  if (!state) return;
-  wrapper.style.transform = `translate(${state.originX}px, ${state.originY}px) scale(${state.scale})`;
-}
-
-function resetZoom(containerId) {
-  const state = zoomStates[containerId];
-  const wrapper = document.querySelector(`#${containerId} .image-wrapper`);
-  if (!state || !wrapper) return;
-  state.scale = 1;
-  state.originX = 0;
-  state.originY = 0;
-  updateTransform(containerId, wrapper);
-}

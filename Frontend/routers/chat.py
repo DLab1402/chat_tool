@@ -38,11 +38,18 @@ async def chat(request: Request, message: str = Form(...)):
     try:
         response = requests.post("http://127.0.0.1:8001/agent", json={"session_id": session_id, "message": message})
         response.raise_for_status()
-        ai_reply = response.json()["response"]
+        if "id" in response.json()["response"].keys():
+            ai_reply = response.json()["response"]["html"]
+            id_reply = response.json()["response"]["id"]
+            return JSONResponse(content={"user": message, "ai": ai_reply,"id": id_reply})
+        else:
+            ai_reply = response.json()["response"]
+            return JSONResponse(content={"user": message, "ai": ai_reply})
     except Exception as e:
         ai_reply = f"Error contacting agent: {e}"
+        return JSONResponse(content={"user": message, "ai": ai_reply})
 
-    return JSONResponse(content={"user": message, "ai": ai_reply})
+    
 
 @router.post("/upload")
 async def upload_folder(request: Request, files: List[UploadFile] = File(...)):

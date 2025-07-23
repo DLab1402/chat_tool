@@ -1,12 +1,11 @@
 # ==== IMPORTS ===
 import os
 import sys
-import base64
+import json
 from fastapi import FastAPI, UploadFile, File, Form
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from utils.output_collector import output_collector, llm_compare_func_gemini
 from utils.global_var import AGENT_API_KEY
 from tools.Task_1n12.runTask1n12 import runTask1n12
 from tools.Task_3n11.runTask3 import runTask3
@@ -109,14 +108,12 @@ def create_mcp():
     async def run_task4_api(session_dir: str = Form(...)):
         print("==> Received session_dir:", session_dir)
         result = runTask4(session_dir)
-        import json
         result_text = json.dumps(result, ensure_ascii=False, indent=2) if isinstance(result, dict) else str(result)
         return {"result": result_text}
 
     # @app.post("/tools/run_task5")
     # async def run_task5_api(session_dir: str = Form(...)):
     #     result = runTask5(session_dir)
-    #     import json
     #     result_text = json.dumps(result, ensure_ascii=False, indent=2) if isinstance(result, dict) else str(result)
     #     return {"result": result_text, "word_file": OUTPUT_PATH_5}
 
@@ -124,7 +121,6 @@ def create_mcp():
     async def run_task6_api(session_dir: str = Form(...)):
         print("==> Received session_dir:", session_dir)
         result = runTask6(session_dir)
-        import json
         result_text = json.dumps(result, ensure_ascii=False, indent=2) if isinstance(result, dict) else str(result)
         print(result_text)
         return {"result": result_text}
@@ -133,7 +129,6 @@ def create_mcp():
     async def run_task9_api(session_dir: str = Form(...)):
         print("==> Received session_dir:", session_dir)
         result = runTask9(session_dir)
-        import json
         result_text = json.dumps(result, ensure_ascii=False, indent=2) if isinstance(result, dict) else str(result)
         print(result_text)
         return {"result": result_text}
@@ -154,7 +149,6 @@ def create_mcp():
     async def run_task13_api(session_dir: str = Form(...)):
         print("==> Received session_dir:", session_dir)
         result = runTask13(session_dir)
-        import json
         result_text = json.dumps(result, ensure_ascii=False, indent=2) if isinstance(result, dict) else str(result)
         print(result_text)
         return {"result": result_text}

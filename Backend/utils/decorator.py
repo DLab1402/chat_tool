@@ -31,11 +31,11 @@ def dict_to_chat_html_with_cv2_image(data: Dict[str, any]) -> str:
         if isinstance(value, np.ndarray):  # Last key is image
             html_lines.append(f'<div><strong>IMAGE:</strong></div>')
             img_b64 = cv2_image_to_base64(value)
-            html_lines.append(f'''<div id = "{timestamp}">
-                              <div id = "{timestamp}1"><img src="{img_b64}" alt="{key}" style="max-width: 100%; height: auto;"></div>
-                              </div>
-                              <script> 
-                              setupZoomPan("{timestamp}","{timestamp}1"); </script>''')
+            html_lines.append(f'''<div class = "image_frame" id = "{timestamp}">
+                              <div class = "reset-button" onclick="resetZoom("{timestamp}")">Reset</div>
+                              <div class = "image_wrapper" id = "{timestamp}1"><img src="{img_b64}" alt="{key}" style="max-width: 100%; height: auto;"></div>
+                              </div>''')
+                                #   <script>setupZoomPan("{timestamp}", "{timestamp}1");</script>''')
                             #   <div class="reset-button" onclick="resetZoom({str(timestamp)})">Reset</div>
         else:
             if isinstance(value,list):
@@ -45,4 +45,4 @@ def dict_to_chat_html_with_cv2_image(data: Dict[str, any]) -> str:
             elif isinstance(value,str):
                 html_lines.append(f'<div><strong>{key}</strong>: {value}.</div>')
 
-    return '\n'.join(html_lines)
+    return {"html":'\n'.join(html_lines),"id":timestamp}
