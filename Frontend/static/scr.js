@@ -75,82 +75,64 @@ document.addEventListener("DOMContentLoaded", () => {
       }
   });
 
-  const zoomStates = {};
+  const zoomContainer = document.getElementById('zoomContainer');
+  const zoomArea = document.getElementById('zoomArea');
+  let scale = 1;
+  let originX = 0;
+  let originY = 0;
+  let startX, startY;
+  let isDragging = false;
 
-  function setupZoomPan(containerId, wrapperId) {
-    const container = document.getElementById(containerId);
-    const wrapper = document.getElementById(wrapperId);
-
-    if (!container || !wrapper) return;
-
-    let state = {
-      scale: 1,
-      originX: 0,
-      originY: 0,
-      isDragging: false,
-      startX: 0,
-      startY: 0
-    };
-
-    zoomStates[containerId] = state;
-
-    container.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      const delta = e.deltaY < 0 ? 0.1 : -0.1;
-      const newScale = Math.min(Math.max(state.scale + delta, 0.1), 5);
-      const rect = wrapper.getBoundingClientRect();
-
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-
-      state.originX -= (mouseX / state.scale) * delta;
-      state.originY -= (mouseY / state.scale) * delta;
-
-      state.scale = newScale;
-      updateTransform(containerId, wrapper);
-    });
-
-    container.addEventListener('mousedown', (e) => {
-      state.isDragging = true;
-      state.startX = e.clientX;
-      state.startY = e.clientY;
-      container.style.cursor = 'grabbing';
-    });
-
-    window.addEventListener('mousemove', (e) => {
-      if (!state.isDragging) return;
-      const dx = (e.clientX - state.startX) / state.scale;
-      const dy = (e.clientY - state.startY) / state.scale;
-      state.originX += dx;
-      state.originY += dy;
-      state.startX = e.clientX;
-      state.startY = e.clientY;
-      updateTransform(containerId, wrapper);
-    });
-
-    window.addEventListener('mouseup', () => {
-      state.isDragging = false;
-      container.style.cursor = 'grab';
-    });
-
-    // Initial apply
-    updateTransform(containerId, wrapper);
+  function setTransform() {
+    zoomContainer.style.transform = `translate(${originX}px, ${originY}px) scale(${scale})`;
   }
 
-  function updateTransform(containerId, wrapper) {
-    const state = zoomStates[containerId];
-    if (!state) return;
-    wrapper.style.transform = `translate(${state.originX}px, ${state.originY}px) scale(${state.scale})`;
+  function resetZoom() {
+    scale = 1;
+    originX = 0;
+    originY = 0;
+    setTransform();
   }
 
-  function resetZoom(containerId) {
-    const state = zoomStates[containerId];
-    const wrapper = document.querySelector(`#${containerId} .image-wrapper`);
-    if (!state || !wrapper) return;
-    state.scale = 1;
-    state.originX = 0;
-    state.originY = 0;
-    updateTransform(containerId, wrapper);
-}
+  function openModal() {
+    document.getElementById('mapModal').style.display = 'block';
+  }
+
+  function closeModal() {
+    document.getElementById('mapModal').style.display = 'none';
+    resetZoom();
+  }
+
+  window.onclick = function(event) {
+    const modal = document.getElementById('mapModal');
+    if (event.target === modal) {
+      closeModal();
+    }
+  }
+
+  zoomArea.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+    scale = Math.min(Math.max(0.5, scale + delta), 5);
+    setTransform();
+  });
+
+  zoomArea.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    isDragging = true;
+    startX = e.clientX - originX;
+    startY = e.clientY - originY;
+  });
+
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    originX = e.clientX - startX;
+    originY = e.clientY - startY;
+    setTransform();
+  });
 
 });

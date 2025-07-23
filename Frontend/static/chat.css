@@ -141,34 +141,83 @@ body {
   background: #2563eb;
 }
 
-.image_frame {
-  width: 90vw;
-  height: 90vh;
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: #fff;
+  margin: 5% auto;
+  border-radius: 6px;
+  width: 90%;
+  max-width: 800px;
   overflow: hidden;
-  border: 1px solid #ccc;
-  background-color: #f0f0f0;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  background-color: #ff6a00;
+  padding: 10px;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-body {
   position: relative;
+  background: #000;
+  overflow: hidden;
+  height: 600px;
+  touch-action: none;
+}
+
+.zoom-container {
+  transform-origin: 0 0;
   cursor: grab;
+  transition: transform 0.05s;
 }
 
-.image-wrapper {
-  display: inline-block;
-  transform-origin: center center;
-  transition: transform 0.1s;
+.zoom-container:active {
+  cursor: grabbing;
 }
 
-.reset-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid #888;
-  padding: 4px 10px;
+.zoom-container img {
+  display: block;
+  max-width: none;
+  user-drag: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+.control-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.control-buttons button {
+  background: none;
+  border: 1px solid white;
+  color: white;
+  padding: 5px 10px;
   cursor: pointer;
-  font-size: 14px;
   border-radius: 4px;
-  z-index: 10;
-  }
+}
+
+.close {
+  font-size: 22px;
+  cursor: pointer;
+  margin-left: 10px;
+}
 
 @media (max-width: 600px) {
   .chat-form {

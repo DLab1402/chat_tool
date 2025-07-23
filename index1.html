@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Zoomable Map Popup</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    .btn-show-map {
+      background-color: #ff6a00;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 5% auto;
+      border-radius: 6px;
+      width: 90%;
+      max-width: 800px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      background-color: #ff6a00;
+      padding: 10px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-body {
+      position: relative;
+      background: #000;
+      overflow: hidden;
+      height: 600px;
+      touch-action: none;
+    }
+
+    .zoom-container {
+      transform-origin: 0 0;
+      cursor: grab;
+      transition: transform 0.05s;
+    }
+
+    .zoom-container:active {
+      cursor: grabbing;
+    }
+
+    .zoom-container img {
+      display: block;
+      max-width: none;
+      user-drag: none;
+      -webkit-user-drag: none;
+      pointer-events: none;
+    }
+
+    .control-buttons {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .control-buttons button {
+      background: none;
+      border: 1px solid white;
+      color: white;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .close {
+      font-size: 22px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Trigger Button -->
+<button class="btn-show-map" onclick="openModal()">📍 Xem bản đồ</button>
+
+<!-- Modal -->
+<div id="mapModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span>Bản đồ</span>
+      <div class="control-buttons">
+        <button onclick="resetZoom()">↺ Reset</button>
+        <span class="close" onclick="closeModal()">&times;</span>
+      </div>
+    </div>
+    <div class="modal-body" id="zoomArea">
+      <div class="zoom-container" id="zoomContainer">
+        <img src="D:\coco128\images\train2017\000002.jpg" alt="Map Image">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+  const zoomContainer = document.getElementById('zoomContainer');
+  const zoomArea = document.getElementById('zoomArea');
+  let scale = 1;
+  let originX = 0;
+  let originY = 0;
+  let startX, startY;
+  let isDragging = false;
+
+  function setTransform() {
+    zoomContainer.style.transform = `translate(${originX}px, ${originY}px) scale(${scale})`;
+  }
+
+  function resetZoom() {
+    scale = 1;
+    originX = 0;
+    originY = 0;
+    setTransform();
+  }
+
+  function openModal() {
+    document.getElementById('mapModal').style.display = 'block';
+  }
+
+  function closeModal() {
+    document.getElementById('mapModal').style.display = 'none';
+    resetZoom();
+  }
+
+  window.onclick = function(event) {
+    const modal = document.getElementById('mapModal');
+    if (event.target === modal) {
+      closeModal();
+    }
+  }
+
+  zoomArea.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+    scale = Math.min(Math.max(0.5, scale + delta), 5);
+    setTransform();
+  });
+
+  zoomArea.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    isDragging = true;
+    startX = e.clientX - originX;
+    startY = e.clientY - originY;
+  });
+
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    originX = e.clientX - startX;
+    originY = e.clientY - startY;
+    setTransform();
+  });
+</script>
+
+</body>
+</html>

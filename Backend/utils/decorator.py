@@ -29,14 +29,24 @@ def dict_to_chat_html_with_cv2_image(data: Dict[str, any]) -> str:
     timestamp = int(time.time())
     for i, (key, value) in enumerate(items):
         if isinstance(value, np.ndarray):  # Last key is image
-            html_lines.append(f'<div><strong>IMAGE:</strong></div>')
+            # html_lines.append(f'<div><strong>IMAGE:</strong></div>')
             img_b64 = cv2_image_to_base64(value)
-            html_lines.append(f'''<div class = "image_frame" id = "{timestamp}">
-                              <div class = "reset-button" onclick="resetZoom("{timestamp}")">Reset</div>
-                              <div class = "image_wrapper" id = "{timestamp}1"><img src="{img_b64}" alt="{key}" style="max-width: 100%; height: auto;"></div>
-                              </div>''')
-                                #   <script>setupZoomPan("{timestamp}", "{timestamp}1");</script>''')
-                            #   <div class="reset-button" onclick="resetZoom({str(timestamp)})">Reset</div>
+            html_lines.append(f'''  <div id="{timestamp}" class="modal">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                        <span>IMAGE</span>
+                                        <div class="control-buttons">
+                                            <button onclick="resetZoom()">↺ Reset</button>
+                                            <span class="close" onclick="closeModal()">&times;</span>
+                                        </div>
+                                        </div>
+                                        <div class="modal-body" id="zoomArea">
+                                        <div class="zoom-container" id="zoomContainer">
+                                            <img src="{img_b64}" alt="Image">
+                                        </div>
+                                        </div>
+                                    </div>
+                                    </div>''')
         else:
             if isinstance(value,list):
                 html_lines.append(f'<div><strong>{key}:</strong></div>')
