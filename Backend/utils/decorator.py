@@ -29,19 +29,17 @@ def dict_to_chat_html_with_cv2_image(data: Dict[str, any]) -> str:
     timestamp = int(time.time())
     for i, (key, value) in enumerate(items):
         if isinstance(value, np.ndarray):  # Last key is image
-            # html_lines.append(f'<div><strong>IMAGE:</strong></div>')
             img_b64 = cv2_image_to_base64(value)
             html_lines.append(f'''  <div id="{timestamp}" class="modal">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                         <span>IMAGE</span>
                                         <div class="control-buttons">
-                                            <button onclick="resetZoom()">↺ Reset</button>
-                                            <span class="close" onclick="closeModal()">&times;</span>
+                                            <button onclick="resetZoom("{timestamp}")">↺ Reset</button>
                                         </div>
                                         </div>
-                                        <div class="modal-body" id="zoomArea">
-                                        <div class="zoom-container" id="zoomContainer">
+                                        <div class="modal-body" id="{timestamp}1">
+                                        <div class="zoom-container" id="{timestamp}2">
                                             <img src="{img_b64}" alt="Image">
                                         </div>
                                         </div>

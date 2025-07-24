@@ -20,7 +20,7 @@
     }
 
     .modal {
-      display: none;
+      /* display: none; */
       position: fixed;
       z-index: 1000;
       left: 0;
@@ -71,7 +71,6 @@
     .zoom-container img {
       display: block;
       max-width: none;
-      user-drag: none;
       -webkit-user-drag: none;
       pointer-events: none;
     }
@@ -101,7 +100,7 @@
 <body>
 
 <!-- Trigger Button -->
-<button class="btn-show-map" onclick="openModal()">📍 Xem bản đồ</button>
+<!-- <button class="btn-show-map" onclick="openModal()">📍 Xem bản đồ</button> -->
 
 <!-- Modal -->
 <div id="mapModal" class="modal">
@@ -123,65 +122,61 @@
 
 <!-- JavaScript -->
 <script>
-  const zoomContainer = document.getElementById('zoomContainer');
-  const zoomArea = document.getElementById('zoomArea');
-  let scale = 1;
-  let originX = 0;
-  let originY = 0;
-  let startX, startY;
-  let isDragging = false;
+  class ImageDisplayer {
+  constructor(zoomContainerId, zoomAreaId) {
+    this.zoomContainer = document.getElementById(zoomContainerId);
+    this.zoomArea = document.getElementById(zoomAreaId);
 
-  function setTransform() {
-    zoomContainer.style.transform = `translate(${originX}px, ${originY}px) scale(${scale})`;
+    this.scale = 1;
+    this.originX = 0;
+    this.originY = 0;
+    this.startX = 0;
+    this.startY = 0;
+    this.isDragging = false;
+
+    this.setTransform();
+
+    this.zoomArea.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const delta = e.deltaY > 0 ? -0.1 : 0.1;
+      this.scale = Math.min(Math.max(0.5, this.scale + delta), 5);
+      this.setTransform(); // FIXED: should be this.setTransform()
+    });
+
+    this.zoomArea.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      this.isDragging = true;
+      this.startX = e.clientX - this.originX; // FIXED: was mistakenly assigning to isDragging
+      this.startY = e.clientY - this.originY;
+    });
+
+    document.addEventListener('mouseup', () => {
+      this.isDragging = false;
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!this.isDragging) return;
+      this.originX = e.clientX - this.startX;
+      this.originY = e.clientY - this.startY;
+      this.setTransform();
+    });
   }
 
-  function resetZoom() {
-    scale = 1;
-    originX = 0;
-    originY = 0;
-    setTransform();
+  setTransform() {
+    this.zoomContainer.style.transform = `translate(${this.originX}px, ${this.originY}px) scale(${this.scale})`;
+    this.zoomContainer.style.transformOrigin = '0 0'; // Optional: to ensure scaling is from top-left
   }
 
-  function openModal() {
-    document.getElementById('mapModal').style.display = 'block';
-  }
+}
 
-  function closeModal() {
-    document.getElementById('mapModal').style.display = 'none';
-    resetZoom();
-  }
-
-  window.onclick = function(event) {
-    const modal = document.getElementById('mapModal');
-    if (event.target === modal) {
-      closeModal();
-    }
-  }
-
-  zoomArea.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    const delta = e.deltaY > 0 ? -0.1 : 0.1;
-    scale = Math.min(Math.max(0.5, scale + delta), 5);
-    setTransform();
-  });
-
-  zoomArea.addEventListener('mousedown', (e) => {
-    e.preventDefault();
-    isDragging = true;
-    startX = e.clientX - originX;
-    startY = e.clientY - originY;
-  });
-
-  document.addEventListener('mouseup', () => {
-    isDragging = false;
-  });
-
-  document.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    originX = e.clientX - startX;
-    originY = e.clientY - startY;
-    setTransform();
-  });
+// Usage
+// const image = new ImageDisplayer('zoomContainer', 'zoomArea');
+function resetZoom(image =new ImageDisplayer('zoomContainer', 'zoomArea')) {
+    image.scale = 1;
+    image.originX = 0;
+    image.originY = 0;
+    image.setTransform();
+}
 </script>
 
 </body>

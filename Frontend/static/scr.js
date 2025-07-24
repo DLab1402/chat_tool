@@ -1,3 +1,60 @@
+const id_image = {};
+
+  class ImageDisplayer {
+    constructor(zoomContainerId, zoomAreaId) {
+      this.zoomContainer = document.getElementById(zoomContainerId);
+      this.zoomArea = document.getElementById(zoomAreaId);
+
+      this.scale = 1;
+      this.originX = 0;
+      this.originY = 0;
+      this.startX = 0;
+      this.startY = 0;
+      this.isDragging = false;
+
+      this.setTransform();
+
+      this.zoomArea.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = e.deltaY > 0 ? -0.1 : 0.1;
+        this.scale = Math.min(Math.max(0.5, this.scale + delta), 5);
+        this.setTransform(); // FIXED: should be this.setTransform()
+      });
+
+      this.zoomArea.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        this.isDragging = true;
+        this.startX = e.clientX - this.originX; // FIXED: was mistakenly assigning to isDragging
+        this.startY = e.clientY - this.originY;
+      });
+
+      document.addEventListener('mouseup', () => {
+        this.isDragging = false;
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!this.isDragging) return;
+        this.originX = e.clientX - this.startX;
+        this.originY = e.clientY - this.startY;
+        this.setTransform();
+      });
+    }
+
+    setTransform() {
+      this.zoomContainer.style.transform = `translate(${this.originX}px, ${this.originY}px) scale(${this.scale})`;
+      this.zoomContainer.style.transformOrigin = '0 0'; // Optional: to ensure scaling is from top-left
+    }
+  }
+
+// Usage
+  // const image = new ImageDisplayer('zoomContainer', 'zoomArea');
+  function resetZoom(id) {
+      id_image[id].scale = 1;
+      id_image[id].originX = 0;
+      id_image[id].originY = 0;
+      id_image[id].setTransform();
+  }
+
 document.addEventListener("DOMContentLoaded", () => {
   const chatForm = document.getElementById("chat-form");
   const chatBox = document.getElementById("chat-box");
@@ -36,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await response.json();
       chatBox.innerHTML += `${data.ai}`;
       if ("id" in data){
-        setupZoomPan(`${data.id}`,`${data.id}1`)
+        id_image[`${data.id}`] = new ImageDisplayer(`${data.id}1`,`${data.id}2`);
       }
     } else {
       chatBox.innerHTML += `${response.statusText}`;
@@ -74,65 +131,4 @@ document.addEventListener("DOMContentLoaded", () => {
         chatBox.innerHTML += `<div class="message ai">Error: ${result.file} hoặc không có file nào thỏa điều kiện.</div>`;
       }
   });
-
-  const zoomContainer = document.getElementById('zoomContainer');
-  const zoomArea = document.getElementById('zoomArea');
-  let scale = 1;
-  let originX = 0;
-  let originY = 0;
-  let startX, startY;
-  let isDragging = false;
-
-  function setTransform() {
-    zoomContainer.style.transform = `translate(${originX}px, ${originY}px) scale(${scale})`;
-  }
-
-  function resetZoom() {
-    scale = 1;
-    originX = 0;
-    originY = 0;
-    setTransform();
-  }
-
-  function openModal() {
-    document.getElementById('mapModal').style.display = 'block';
-  }
-
-  function closeModal() {
-    document.getElementById('mapModal').style.display = 'none';
-    resetZoom();
-  }
-
-  window.onclick = function(event) {
-    const modal = document.getElementById('mapModal');
-    if (event.target === modal) {
-      closeModal();
-    }
-  }
-
-  zoomArea.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    const delta = e.deltaY > 0 ? -0.1 : 0.1;
-    scale = Math.min(Math.max(0.5, scale + delta), 5);
-    setTransform();
-  });
-
-  zoomArea.addEventListener('mousedown', (e) => {
-    e.preventDefault();
-    isDragging = true;
-    startX = e.clientX - originX;
-    startY = e.clientY - originY;
-  });
-
-  document.addEventListener('mouseup', () => {
-    isDragging = false;
-  });
-
-  document.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    originX = e.clientX - startX;
-    originY = e.clientY - startY;
-    setTransform();
-  });
-
 });
