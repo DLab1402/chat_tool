@@ -175,8 +175,9 @@ body {
 .modal-body {
   position: relative;
   background: #000;
-  overflow: hidden;
-  height: 600px;
+  /* overflow: hidden; */
+  height: 768px;
+  width: 768px;
   touch-action: none;
 }
 
@@ -193,7 +194,7 @@ body {
 .zoom-container img {
   display: block;
   max-width: none;
-  user-drag: none;
+  /* user-drag: none; */
   -webkit-user-drag: none;
   pointer-events: none;
 }
@@ -211,12 +212,6 @@ body {
   padding: 5px 10px;
   cursor: pointer;
   border-radius: 4px;
-}
-
-.close {
-  font-size: 22px;
-  cursor: pointer;
-  margin-left: 10px;
 }
 
 @media (max-width: 600px) {

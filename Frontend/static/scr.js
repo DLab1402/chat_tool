@@ -5,7 +5,9 @@ const id_image = {};
       this.zoomContainer = document.getElementById(zoomContainerId);
       this.zoomArea = document.getElementById(zoomAreaId);
 
-      this.scale = 1;
+      this.first_scale = this.zoomArea.naturalWidth/768;
+      
+      this.scale = 0.1;
       this.originX = 0;
       this.originY = 0;
       this.startX = 0;
@@ -94,6 +96,8 @@ document.addEventListener("DOMContentLoaded", () => {
       chatBox.innerHTML += `${data.ai}`;
       if ("id" in data){
         id_image[`${data.id}`] = new ImageDisplayer(`${data.id}1`,`${data.id}2`);
+        id_imageid_image[`${data.id}`].scale = 0.1;
+        id_imageid_image[`${data.id}`].setTransform();
       }
     } else {
       chatBox.innerHTML += `${response.statusText}`;
