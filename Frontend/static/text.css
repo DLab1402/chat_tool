@@ -1,0 +1,237 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
+
+:root {
+  --bg: #f9fafb;
+  --input-bg: #ffffff;
+  --user-bg: #d1fae5;
+  --ai-bg: #e0e7ff;
+  --text: #111827;
+  --border: #e5e7eb;
+  --primary: #3b82f6;
+  --success: #10b981;
+  --radius: 12px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  /* overflow: hidden; */
+}
+
+.header {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 1rem;
+  display: flex;
+  justify-content: flex-end;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.header button {
+  padding: 0.5rem 1rem;
+  background-color: var(--success);
+  color: white;
+  font-weight: 500;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.header button:hover {
+  background-color: #052096;
+}
+
+.chat-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 768px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.message {
+  max-width: 80%;
+  padding: 0.85rem 1.2rem;
+  border-radius: var(--radius);
+  white-space: pre-wrap;
+  line-height: 1.5;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.message.user {
+  /* align-self: flex-end;
+  background: var(--user-bg);
+  margin-left: flex;
+  text-align: right; */
+  align-self: flex-end;
+  background: var(--user-bg);
+  margin-left: auto; /* 'flex' is invalid here, use 'auto' */
+  text-align: right;
+  word-wrap: break-word;       /* Ensures long words break */
+  overflow-wrap: break-word;   /* Modern equivalent, ensures wrapping */
+  white-space: normal;         /* Allows text to wrap */
+  max-width: 80%; 
+}
+
+.message.ai {
+  align-self: flex-start;
+  background: var(--ai-bg);
+  margin-right: auto;
+}
+
+.input-wrapper {
+  border-top: 1px solid var(--border);
+  background: var(--input-bg);
+  padding: 1rem;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.03);
+}
+
+.chat-form {
+  max-width: 790px;
+  margin: 0 auto;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.chat-form textarea {
+  flex: 1;
+  resize: none;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #fff;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+  transition: border 0.2s;
+  min-height: 44px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.chat-form textarea:focus {
+  border-color: var(--primary);
+  outline: none;
+}
+
+.chat-form button {
+  padding: 0.75rem 1.2rem;
+  font-size: 1rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.chat-form button:hover {
+  background: #2563eb;
+}
+
+.modal {
+  /* display: none; */
+  /* position: fixed; */
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: #fff;
+  /* margin: 5% auto; */
+  border-radius: 6px;
+  width: 100%;
+  max-width: 800px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  background-color: #ff6a00;
+  padding: 10px;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-body {
+  position: relative;
+  background: #000;
+  /* overflow: hidden; */
+  height: 768px;
+  width: 768px;
+  touch-action: none;
+}
+
+.zoom-container {
+  transform-origin: 0 0;
+  cursor: grab;
+  /* transition: transform 0.05s; */
+}
+
+.zoom-container:active {
+  cursor: grabbing;
+}
+
+.zoom-container img {
+  display: block;
+  max-width: none;
+  /* user-drag: none; */
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+.control-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.control-buttons button {
+  background: none;
+  border: 1px solid white;
+  color: white;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+@media (max-width: 600px) {
+  .chat-form {
+    flex-direction: column;
+  }
+
+  .chat-form button {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

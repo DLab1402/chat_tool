@@ -1,11 +1,11 @@
 const id_image = {};
 
   class ImageDisplayer {
-    constructor(zoomContainerId, zoomAreaId) {
-      this.zoomContainer = document.getElementById(zoomContainerId);
+    constructor(zoomAreaId) {
+      // this.zoomContainer = document.getElementById(zoomContainerId);
       this.zoomArea = document.getElementById(zoomAreaId);
 
-      this.first_scale = this.zoomArea.naturalWidth/768;
+      // this.first_scale = this.zoomArea.F/768;
       
       this.scale = 0.1;
       this.originX = 0;
@@ -43,8 +43,8 @@ const id_image = {};
     }
 
     setTransform() {
-      this.zoomContainer.style.transform = `translate(${this.originX}px, ${this.originY}px) scale(${this.scale})`;
-      this.zoomContainer.style.transformOrigin = '0 0'; // Optional: to ensure scaling is from top-left
+      this.zoomArea.style.transform = `translate(${this.originX}px, ${this.originY}px) scale(${this.scale})`;
+      this.zoomArea.style.transformOrigin = '0 0'; // Optional: to ensure scaling is from top-left
     }
   }
 
@@ -95,9 +95,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await response.json();
       chatBox.innerHTML += `${data.ai}`;
       if ("id" in data){
-        id_image[`${data.id}`] = new ImageDisplayer(`${data.id}1`,`${data.id}2`);
-        id_imageid_image[`${data.id}`].scale = 0.1;
-        id_imageid_image[`${data.id}`].setTransform();
+        id_image[`${data.id}`] = new ImageDisplayer(`${data.id}`);
+        id_image[`${data.id}`].scale = 0.1;
+        id_image[`${data.id}`].setTransform();
       }
     } else {
       chatBox.innerHTML += `${response.statusText}`;

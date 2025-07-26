@@ -15,7 +15,7 @@
 body {
   margin: 0;
   font-family: 'Inter', system-ui, sans-serif;
-  background: var(--bg);
+  background: linear-gradient(to bottom, #f9fafb, #e5e7eb);
   color: var(--text);
   display: flex;
   flex-direction: column;
@@ -44,7 +44,7 @@ body {
 }
 
 .header button:hover {
-  background-color: #052096;
+  background-color: #059669;
 }
 
 .chat-container {
@@ -58,31 +58,35 @@ body {
   width: 100%;
   margin: 0 auto;
   box-sizing: border-box;
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .message {
   max-width: 80%;
   padding: 0.85rem 1.2rem;
   border-radius: var(--radius);
-  white-space: pre-wrap;
   line-height: 1.5;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-  animation: fadeIn 0.3s ease-out;
+  animation: fadeIn 0.4s ease-out;
+  position: relative;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  transition: all 0.2s ease;
+}
+
+.message:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
 }
 
 .message.user {
-  /* align-self: flex-end;
-  background: var(--user-bg);
-  margin-left: flex;
-  text-align: right; */
   align-self: flex-end;
   background: var(--user-bg);
-  margin-left: auto; /* 'flex' is invalid here, use 'auto' */
+  margin-left: auto;
   text-align: right;
-  word-wrap: break-word;       /* Ensures long words break */
-  overflow-wrap: break-word;   /* Modern equivalent, ensures wrapping */
-  white-space: normal;         /* Allows text to wrap */
-  max-width: 80%; 
 }
 
 .message.ai {
@@ -91,11 +95,32 @@ body {
   margin-right: auto;
 }
 
+.message.user::after {
+  content: "";
+  position: absolute;
+  right: -8px;
+  top: 10px;
+  border: 8px solid transparent;
+  border-left-color: var(--user-bg);
+}
+
+.message.ai::after {
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: 10px;
+  border: 8px solid transparent;
+  border-right-color: var(--ai-bg);
+}
+
 .input-wrapper {
   border-top: 1px solid var(--border);
   background: var(--input-bg);
   padding: 1rem;
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.03);
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
 }
 
 .chat-form {
@@ -113,9 +138,9 @@ body {
   line-height: 1.5;
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: #fff;
-  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
-  transition: border 0.2s;
+  background: #fefefe;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: border 0.2s, box-shadow 0.2s;
   min-height: 44px;
   max-height: 180px;
   overflow-y: auto;
@@ -124,6 +149,7 @@ body {
 .chat-form textarea:focus {
   border-color: var(--primary);
   outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
 .chat-form button {
@@ -141,79 +167,9 @@ body {
   background: #2563eb;
 }
 
-.modal {
-  /* display: none; */
-  /* position: fixed; */
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-}
+/*Image display*/
 
-.modal-content {
-  background-color: #fff;
-  /* margin: 5% auto; */
-  border-radius: 6px;
-  width: 100%;
-  max-width: 800px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.modal-header {
-  background-color: #ff6a00;
-  padding: 10px;
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.modal-body {
-  position: relative;
-  background: #000;
-  /* overflow: hidden; */
-  height: 768px;
-  width: 768px;
-  touch-action: none;
-}
-
-.zoom-container {
-  transform-origin: 0 0;
-  cursor: grab;
-  /* transition: transform 0.05s; */
-}
-
-.zoom-container:active {
-  cursor: grabbing;
-}
-
-.zoom-container img {
-  display: block;
-  max-width: none;
-  /* user-drag: none; */
-  -webkit-user-drag: none;
-  pointer-events: none;
-}
-
-.control-buttons {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.control-buttons button {
-  background: none;
-  border: 1px solid white;
-  color: white;
-  padding: 5px 10px;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
+/* Mobile responsiveness */
 @media (max-width: 600px) {
   .chat-form {
     flex-direction: column;
@@ -223,12 +179,21 @@ body {
     width: 100%;
     margin-top: 0.5rem;
   }
+
+  .chat-container {
+    padding: 1rem 0.5rem;
+  }
+  /*
+  .modal-body {
+    width: 100%;
+    height: auto;
+  } */
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(5px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
