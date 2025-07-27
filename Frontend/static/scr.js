@@ -2,8 +2,8 @@ const id_image = {};
 
   class ImageDisplayer {
     constructor(zoomAreaId) {
-      // this.zoomContainer = document.getElementById(zoomContainerId);
-      this.zoomArea = document.getElementById(zoomAreaId);
+      // this.img_box = document.getElementById(zoomContainerId);
+      this.img = document.getElementById(zoomAreaId);
 
       // this.first_scale = this.zoomArea.F/768;
       
@@ -16,22 +16,27 @@ const id_image = {};
 
       this.setTransform();
 
-      this.zoomArea.addEventListener('wheel', (e) => {
+      this.img.addEventListener('wheel', (e) => {
         e.preventDefault();
         const delta = e.deltaY > 0 ? -0.1 : 0.1;
         this.scale = Math.min(Math.max(0.5, this.scale + delta), 5);
         this.setTransform(); // FIXED: should be this.setTransform()
       });
 
-      this.zoomArea.addEventListener('mousedown', (e) => {
+      this.img.addEventListener('mousedown', (e) => {
+        if (!this.isDragging) return;
         e.preventDefault();
+
         this.isDragging = true;
+        
+        
         this.startX = e.clientX - this.originX; // FIXED: was mistakenly assigning to isDragging
         this.startY = e.clientY - this.originY;
       });
 
       document.addEventListener('mouseup', () => {
         this.isDragging = false;
+        // this.img.style.cursor = 'grab';
       });
 
       document.addEventListener('mousemove', (e) => {
@@ -43,8 +48,8 @@ const id_image = {};
     }
 
     setTransform() {
-      this.zoomArea.style.transform = `translate(${this.originX}px, ${this.originY}px) scale(${this.scale})`;
-      this.zoomArea.style.transformOrigin = '0 0'; // Optional: to ensure scaling is from top-left
+      this.img.style.transform = `translate(${this.originX}px, ${this.originY}px) scale(${this.scale})`;
+      this.img.style.transformOrigin = '0 0'; // Optional: to ensure scaling is from top-left
     }
   }
 
