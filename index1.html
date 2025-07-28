@@ -108,7 +108,7 @@
     <div class="modal-header">
       <span>Bản đồ</span>
       <div class="control-buttons">
-        <button onclick="resetZoom()">↺ Reset</button>
+        <button onclick="resetZoom('zoomArea')">↺ Reset</button>
         <span class="close" onclick="closeModal()">&times;</span>
       </div>
     </div>
@@ -122,6 +122,9 @@
 
 <!-- JavaScript -->
 <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const id_iamge = {};
+  
   class ImageDisplayer {
   constructor(zoomContainerId, zoomAreaId) {
     this.zoomContainer = document.getElementById(zoomContainerId);
@@ -171,12 +174,14 @@
 
 // Usage
 // const image = new ImageDisplayer('zoomContainer', 'zoomArea');
-function resetZoom(image =new ImageDisplayer('zoomContainer', 'zoomArea')) {
-    image.scale = 1;
-    image.originX = 0;
-    image.originY = 0;
-    image.setTransform();
-}
+  id_iamge["zoomArea"] = new ImageDisplayer('zoomContainer', 'zoomArea');
+});
+  function resetZoom(id) {
+      id_image[id].scale = 1;
+      id_image[id].originX = 0;
+      id_image[id].originY = 0;
+      id_image[id].setTransform();
+  }
 </script>
 
 </body>

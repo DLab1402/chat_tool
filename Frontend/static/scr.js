@@ -1,13 +1,17 @@
-const id_image = {};
+document.addEventListener("DOMContentLoaded", () => {
+  const id_image = {};
 
   class ImageDisplayer {
-    constructor(zoomAreaId) {
-      // this.img_box = document.getElementById(zoomContainerId);
-      this.img = document.getElementById(zoomAreaId);
+    constructor(frame,img_box,img) {
+      console.log(img);
+      console.log(img_box);
+      this.frame = document.getElementById(frame);
+      this.img_box = document.getElementById(img_box);
+      this.img = document.getElementById(img);
 
       // this.first_scale = this.zoomArea.F/768;
       
-      this.scale = 0.1;
+      this.scale = 1;
       this.originX = 0;
       this.originY = 0;
       this.startX = 0;
@@ -16,15 +20,14 @@ const id_image = {};
 
       this.setTransform();
 
-      this.img.addEventListener('wheel', (e) => {
+      this.img_box.addEventListener('wheel', (e) => {
         e.preventDefault();
         const delta = e.deltaY > 0 ? -0.1 : 0.1;
         this.scale = Math.min(Math.max(0.5, this.scale + delta), 5);
         this.setTransform(); // FIXED: should be this.setTransform()
       });
 
-      this.img.addEventListener('mousedown', (e) => {
-        if (!this.isDragging) return;
+      this.img_box.addEventListener('mousedown', (e) => {
         e.preventDefault();
 
         this.isDragging = true;
@@ -34,35 +37,34 @@ const id_image = {};
         this.startY = e.clientY - this.originY;
       });
 
-      document.addEventListener('mouseup', () => {
+      this.img_box.addEventListener('mouseup', () => {
         this.isDragging = false;
-        // this.img.style.cursor = 'grab';
+        this.img.style.cursor = 'grabbing';
       });
 
-      document.addEventListener('mousemove', (e) => {
+      this.img_box.addEventListener('mousemove', (e) => {
         if (!this.isDragging) return;
         this.originX = e.clientX - this.startX;
         this.originY = e.clientY - this.startY;
+        // this.img.style.transform = `translate(${this.originX}px, ${this.originY}px) scale(${this.scale})`;
         this.setTransform();
       });
+
+      this.frame.addEventListener('dblclick', () => {
+        this.scale = 1;
+        this.originX = 0;
+        this.originY = 0;
+        this.setTransform();
+      });
+
     }
 
     setTransform() {
-      this.img.style.transform = `translate(${this.originX}px, ${this.originY}px) scale(${this.scale})`;
-      this.img.style.transformOrigin = '0 0'; // Optional: to ensure scaling is from top-left
+      this.img_box.style.transform = `translate(${this.originX}px, ${this.originY}px) scale(${this.scale})`;
+      this.img_box.style.transformOrigin = '0 0'; // Optional: to ensure scaling is from top-left
     }
   }
 
-// Usage
-  // const image = new ImageDisplayer('zoomContainer', 'zoomArea');
-  function resetZoom(id) {
-      id_image[id].scale = 1;
-      id_image[id].originX = 0;
-      id_image[id].originY = 0;
-      id_image[id].setTransform();
-  }
-
-document.addEventListener("DOMContentLoaded", () => {
   const chatForm = document.getElementById("chat-form");
   const chatBox = document.getElementById("chat-box");
   const textarea = document.getElementById("message-input");
@@ -100,9 +102,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await response.json();
       chatBox.innerHTML += `${data.ai}`;
       if ("id" in data){
-        id_image[`${data.id}`] = new ImageDisplayer(`${data.id}`);
-        id_image[`${data.id}`].scale = 0.1;
-        id_image[`${data.id}`].setTransform();
+        id_image[`${data.id}`] = new ImageDisplayer(`${data.id}`,`${data.id}1`,`${data.id}2`);
+        console.log(id_image);
       }
     } else {
       chatBox.innerHTML += `${response.statusText}`;
