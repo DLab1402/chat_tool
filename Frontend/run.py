@@ -10,4 +10,8 @@ from utils.global_var import FORNTEND_IP,FRONTEND_PORT
 app = create_app()
 
 if __name__ == "__main__":
-    uvicorn.run("run:app", host=FORNTEND_IP, port=FRONTEND_PORT, reload=True)
+    uvicorn.run("run:app", host=FORNTEND_IP, 
+                port=FRONTEND_PORT, 
+                ssl_keyfile="key.pem",
+                ssl_certfile="cert.pem",
+                reload=True)
