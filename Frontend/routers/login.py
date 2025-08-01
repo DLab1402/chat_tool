@@ -1,8 +1,13 @@
 from fastapi import APIRouter, Form, Request
 from fastapi.responses import RedirectResponse, HTMLResponse
+
 import uuid
 import sys
 import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from utils.user_db import usser_list
 
 router = APIRouter()
 
@@ -21,9 +26,11 @@ async def login_page(request: Request):
 
 @router.post("/login")
 async def login(request: Request, username: str = Form(...), password: str = Form(...)):
-    if username == "admin" and password == "1234":
-        request.session["logged_in"] = True
-        return RedirectResponse("/chat", status_code=302)
+    if username in usser_list:
+        if usser_list[username].password == password:
+            request.session["logged_in"] = True
+            usser_list[username].currentID = request.session["session_id"]
+            return RedirectResponse("/chat", status_code=302)
     return request.app.templates.TemplateResponse("login.html", {"request": request, "error": "Invalid credentials"})
 
 @router.get("/logout")
