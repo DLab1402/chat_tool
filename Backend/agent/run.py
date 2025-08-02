@@ -5,7 +5,7 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from utils.global_var import BACKEND_IP,BACKTEND_PORT
+from utils.global_backend import BACKEND_IP,BACKTEND_PORT
 
 agent = create_agent()
 

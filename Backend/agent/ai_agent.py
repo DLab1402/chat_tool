@@ -15,7 +15,7 @@ import sys
 from pydantic import BaseModel  
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from utils.global_var import session_folders, UPLOAD_DIR, AGENT_API_KEY, MCP_IP, MCP_PORT
+from utils.global_backend import session_folders, UPLOAD_DIR, AGENT_API_KEY, MCP_IP, MCP_PORT
 
 # ==== CONFIGURATION ====
 MCP_SERVER_URL = "http://"+MCP_IP+":"+str(MCP_PORT)

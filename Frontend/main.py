@@ -9,7 +9,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from config import Settings
 from routers import login, chat, visual
-from utils.global_var import STATIC_DIR, TEMP_DIR
+from Frontend.utils.global_frontend import STATIC_DIR, TEMP_DIR
 
 def create_app():
     app = FastAPI()
