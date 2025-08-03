@@ -1,5 +1,6 @@
 import os
 import sys
+import asyncio
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
@@ -9,7 +10,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from config import Settings
 from routers import login, chat, visual
-from Frontend.utils.global_frontend import STATIC_DIR, TEMP_DIR
+from Frontend.utils.global_frontend import STATIC_DIR, REDIS, EXPIRE_TIME, UPLOAD_DIR
 
 def create_app():
     app = FastAPI()
@@ -25,4 +26,8 @@ def create_app():
     app.include_router(chat.router)
     app.include_router(visual.router)
 
+    @app.on_event("startup")
+    async def startup_event():
+        asyncio.create_task(redis_expired_listener())
+    
     return app

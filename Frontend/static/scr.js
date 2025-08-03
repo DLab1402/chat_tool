@@ -142,7 +142,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
   });
 
-  async  function logout(){
-    return await fetch("/logout", {method: "POST"});
-  }
+  document.getElementById("logout").addEventListener("click", async function () {
+    await fetch("/logout", {method: "POST"});
+    window.location.href = "/login";
+  });
 });

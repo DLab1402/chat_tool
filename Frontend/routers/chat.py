@@ -66,7 +66,7 @@ async def upload_folder(request: Request, files: List[UploadFile] = File(...)):
 
     
         response = requests.post(
-            url="http://127.0.0.1:8001/upload",
+            url="http://127.0.0.1:8001/upload", 
             files=form_files,
             data=data
         )
@@ -96,6 +96,5 @@ async def logout(request: Request):
     try:
         
         request.session.clear()
-        return RedirectResponse("/login", status_code=302)
     except:
         pass

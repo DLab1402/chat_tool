@@ -1,4 +1,6 @@
 import os
+import redis.asyncio as redis
+
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 FRONTEND_DIR = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
 ROOT_DIR = os.path.abspath(os.path.join(CURRENT_DIR, "..",".."))
@@ -7,7 +9,11 @@ print(UPLOAD_DIR)
 STATIC_DIR = os.path.join(FRONTEND_DIR,"static")
 TEMP_DIR = os.path.join(FRONTEND_DIR,"templates")
 
-#Port detect
+#Data expire setup
+REDIS = redis.from_url("redis://127.0.0.1:8002")
+EXPIRE_TIME = 86400 #one day
+
+#Port declear
 import socket
 
 def get_ipv4():
