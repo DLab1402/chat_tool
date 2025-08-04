@@ -1,16 +1,16 @@
 import os
-import redis.asyncio as redis
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 FRONTEND_DIR = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
 ROOT_DIR = os.path.abspath(os.path.join(CURRENT_DIR, "..",".."))
 UPLOAD_DIR = os.path.join(ROOT_DIR,"Backend","Upload_data")
-print(UPLOAD_DIR)
+
 STATIC_DIR = os.path.join(FRONTEND_DIR,"static")
 TEMP_DIR = os.path.join(FRONTEND_DIR,"templates")
 
 #Data expire setup
-REDIS = redis.from_url("redis://127.0.0.1:8002")
+# REDIS = redis.from_url("redis://127.0.0.1:6379", decode_responses = True)
+REDIS = None
 EXPIRE_TIME = 86400 #one day
 
 #Port declear
