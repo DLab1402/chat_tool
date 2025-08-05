@@ -8,11 +8,6 @@ UPLOAD_DIR = os.path.join(ROOT_DIR,"Backend","Upload_data")
 STATIC_DIR = os.path.join(FRONTEND_DIR,"static")
 TEMP_DIR = os.path.join(FRONTEND_DIR,"templates")
 
-#Data expire setup
-# REDIS = redis.from_url("redis://127.0.0.1:6379", decode_responses = True)
-REDIS = None
-EXPIRE_TIME = 86400 #one day
-
 #Port declear
 import socket
 

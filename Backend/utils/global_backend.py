@@ -36,6 +36,10 @@ BACKTEND_PORT = 8001
 MCP_IP = "127.0.0.1"
 MCP_PORT = 9000
 
+#Expired setup
+EXPIRE_TIME = 3600 #one hour
+TRIGGER_TIME = 60 #one minute
+
 #Test layers
 
 #Official layers
