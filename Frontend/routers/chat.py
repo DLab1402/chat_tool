@@ -9,7 +9,7 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from utils.global_frontend import TEMP_DIR
+from utils.global_frontend import TEMP_DIR, UPLOAD_DIR
 
 router = APIRouter()
 
@@ -84,7 +84,6 @@ async def upload_folder(request: Request, files: List[UploadFile] = File(...)):
 @router.post("/logout")
 async def logout(request: Request):
     try:
-        
         request.session.clear()
     except:
         pass

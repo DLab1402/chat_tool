@@ -28,8 +28,12 @@ async def clean_up_task():
         try:
             print("Triggerd time")
             for session in session_folders:
-                if session_folders[session]["born_time"] - time.time() >= EXPIRE_TIME:
-                    shutil.rmtree(session_folders[session]["name"])
+                if os.path.isdir(session_folders[session]["name"]):
+                    t = time.time() - session_folders[session]["born_time"]
+                    print(t)
+                    if t>= EXPIRE_TIME:
+                        shutil.rmtree(session_folders[session]["name"])
+                        del session_folders[session]
             await asyncio.sleep(TRIGGER_TIME)
         except Exception as e:
             print(f"Task error: {e}")
