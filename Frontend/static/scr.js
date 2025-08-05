@@ -141,4 +141,9 @@ document.addEventListener("DOMContentLoaded", () => {
         chatBox.innerHTML += `<div class="message ai">Error: ${result.file} hoặc không có file nào thỏa điều kiện.</div>`;
       }
   });
+
+  document.getElementById("logout").addEventListener("click", async function () {
+    await fetch("/logout", {method: "POST"});
+    window.location.href = "/login";
+  });
 });

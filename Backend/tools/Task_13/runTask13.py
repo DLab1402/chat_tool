@@ -8,7 +8,7 @@ import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from utils.global_var import AGENT_API_KEY
+from utils.global_backend import AGENT_API_KEY
 from utils.file_classifier import classify_input_files
 from utils.decorator import dict_to_chat_html_with_cv2_image
 
