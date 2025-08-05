@@ -7,20 +7,33 @@ from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.responses import StreamingResponse, JSONResponse, FileResponse
 from typing import Optional
 
-import uvicorn
+import asyncio
 import os
 import shutil
 from typing import List
 import sys
-from pydantic import BaseModel  
+from pydantic import BaseModel 
+import time
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from utils.global_backend import session_folders, UPLOAD_DIR, AGENT_API_KEY, MCP_IP, MCP_PORT
+from utils.global_backend import session_folders, UPLOAD_DIR, AGENT_API_KEY, MCP_IP, MCP_PORT, TRIGGER_TIME, EXPIRE_TIME
 
 # ==== CONFIGURATION ====
 MCP_SERVER_URL = "http://"+MCP_IP+":"+str(MCP_PORT)
 GEMINI_API_KEY = AGENT_API_KEY
 GEMINI_MODEL = "models/gemini-1.5-pro-latest"
+
+async def clean_up_task():
+    while True:
+        try:
+            print("Triggerd time")
+            for session in session_folders:
+                if session_folders[session]["born_time"] - time.time() >= EXPIRE_TIME:
+                    shutil.rmtree(session_folders[session]["name"])
+            await asyncio.sleep(TRIGGER_TIME)
+        except Exception as e:
+            print(f"Task error: {e}")
+
 
 def create_agent():
     # ==== APP INIT ====
@@ -128,8 +141,7 @@ def create_agent():
         os.makedirs(input_dir,exist_ok=True)
         os.makedirs(process_dir,exist_ok=True)
         os.makedirs(output_dir,exist_ok=True)
-        session_folders[session_id] = session_dir
-        print(session_folders)
+        session_folders[session_id] = {"name": session_dir, "born_time": time.time()}
         saved_files = []
 
         for file in files:
@@ -165,5 +177,9 @@ def create_agent():
             )
         print("❌ File not found")
         return {"error": "File not found"}
+    
+    @app.on_event("startup")
+    async def startup_event():
+        asyncio.create_task(clean_up_task())
 
     return app

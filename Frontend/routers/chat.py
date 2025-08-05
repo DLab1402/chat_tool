@@ -9,7 +9,7 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from utils.global_frontend import TEMP_DIR, REDIS, EXPIRE_TIME
+from utils.global_frontend import TEMP_DIR
 
 router = APIRouter()
 
@@ -35,7 +35,6 @@ async def chat(request: Request, message: str = Form(...)):
         return RedirectResponse(url="/login")
 
     session_id = request.session.get("session_id")
-    await REDIS.set(session_id, "active", ex=30)
 
     try:
         response = requests.post("http://127.0.0.1:8001/agent", json={"session_id": session_id, "message": message})
@@ -81,17 +80,6 @@ async def upload_folder(request: Request, files: List[UploadFile] = File(...)):
         return JSONResponse(content={"status": "uploaded", "file":  ai_reply})
 
     return JSONResponse(content={"status": "uploaded", "file": ai_reply})
-
-# @router.post("/cleanup")
-# async def cleanup_session(request: Request):
-#     session_id = request.session.get("session_id")
-#     print(session_id)
-#     if session_id:
-#         folder = session_folders.pop(session_id, None)
-#         if folder and os.path.exists(folder):
-#             shutil.rmtree(folder)
-#         request.session.clear()
-#     return {"status": "session cleaned"}
 
 @router.post("/logout")
 async def logout(request: Request):
