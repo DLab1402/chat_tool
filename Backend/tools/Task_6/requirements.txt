@@ -1,0 +1,10 @@
+torch==2.7.0 
+torchvision==0.22.0 
+Pillow==10.4.0 
+matplotlib==3.9.0 
+numpy==1.26.4 
+albumentations==1.4.21 
+opencv-python==4.11.0.86 
+scikit-image==0.25.2 
+ultralytics==8.3.58 
+shapely==2.1.0
