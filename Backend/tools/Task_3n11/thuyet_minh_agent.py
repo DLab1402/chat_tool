@@ -114,12 +114,17 @@ def answer_pdf_luu_luong(pdf_file: bytes):
         return "Không tìm thấy nội dung các mục yêu cầu."
     rag_context = query_rag_context("lưu lượng nước chữa cháy")
     prompt = f"""
-Bạn là chuyên gia kiểm tra thuyết minh xây dựng về phòng cháy chữa cháy. Đây là tài liệu tham khảo:
+    Hãy trả lời ngắn gọn, rõ ràng.
+    Không dùng dấu ngoặc kép ("") hoặc dấu ba chấm (...).
+    Trình bày theo cách dễ đọc, súc tích, không rườm rà.
+    Trả lời dưới dạng danh sách gạch đầu dòng, không dùng dấu ngoặc kép và dấu ba chấm.
+    
+    Bạn là chuyên gia kiểm tra thuyết minh xây dựng về phòng cháy chữa cháy. Đây là tài liệu tham khảo:
 
-{rag_context}
+    {rag_context}
 
----
-"""
+    ---
+    """
     for title in section_titles:
         prompt += f"[{title}]\n{sections.get(title, '')}\n\n"
     prompt += "Kiểm tra xem có đề cập đến lưu lượng nước (nhu cầu nước sinh hoạt, nhu cầu nước chữa cháy, tổng nhu cầu nước/ngày) hay không.\nNếu có thông tin về lưu lượng nước hãy liệt kê số liệu cụ thể. Nếu không có thông tin thì cảnh báo không có."

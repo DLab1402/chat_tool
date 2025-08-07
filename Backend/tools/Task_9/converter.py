@@ -1,11 +1,9 @@
 import ezdxf
 import math
 import matplotlib.pyplot as plt
-import os
 from tools.Task_9.dxf_to_png import convert_dxf_to_png
-
-layer_cuuhoa = "trucuuhoa"
-layer_to_check = [layer_cuuhoa, "xref_bct2_tong the$0$QH_DAT_CTHTKT_DuongGT"]
+from utils.global_backend import layer_cuuhoa, layer_GTNB_9
+layer_to_check = [layer_cuuhoa, layer_GTNB_9]
 
 def draw_trucuuhoa_distances(input_filename, output_filename1, output_filename2, layer_cuuhoa=layer_cuuhoa, layer_to_check=layer_to_check):
     # Load bản vẽ
@@ -18,22 +16,25 @@ def draw_trucuuhoa_distances(input_filename, output_filename1, output_filename2,
         if entity.dxf.layer == layer_cuuhoa and entity.dxftype() == 'INSERT':
             pos = entity.dxf.insert
             trucuuhoa_points.append((pos.x, pos.y))
-
+    trucuuhoa_texts = f"Số lượng trụ cứu hỏa: {len(trucuuhoa_points)}"
     print(f"Số lượng trụ cứu hỏa: {len(trucuuhoa_points)}")
 
     if len(trucuuhoa_points) < 2:
         print(f"Chỉ có {len(trucuuhoa_points)} trụ cứu hỏa, không đủ để tính khoảng cách")
-        return {"error": "Không đủ trụ cứu hỏa để tính khoảng cách"}
+        return {"error": f"Chỉ có {len(trucuuhoa_points)} trụ cứu hỏa, không đủ để tính khoảng cách"}
 
     # Tính khoảng cách từng cặp
     distances = []
+    text_distances = []
+
     for i in range(len(trucuuhoa_points)):
-        for j in range(i + 1, len(trucuuhoa_points)):
+        for j in range(i + 1, len(trucuuhoa_points)):  
             p1 = trucuuhoa_points[i]
             p2 = trucuuhoa_points[j]
             d = math.hypot(p1[0] - p2[0], p1[1] - p2[1])
             distances.append({"from": p1, "to": p2, "distance": d})
-            print(f"Khoảng cách từ {p1} đến {p2}: {d:.2f} m")
+            print(f"Khoảng cách từ trụ {j} đến trụ {j+1} là: {d:.2f} m")
+            text_distances.append(f"    {d:.2f} m")
 
     # Tạo figure
     plt.figure(figsize=(12, 12))
@@ -66,7 +67,7 @@ def draw_trucuuhoa_distances(input_filename, output_filename1, output_filename2,
     img = cv2.imread(output_filename2)
     return {
         "Hình ảnh": output_png,
-        "Số lượng trụ cứu hỏa": len(trucuuhoa_points),
-        "Khoảng cách giữa các trụ": [f"Từ {item['from']} đến {item['to']}: {item['distance']:.2f} m" for item in distances],
+        "Trụ cứu hỏa": trucuuhoa_texts,
+        "Khoảng cách giữa các trụ": text_distances,
         "image": img
     }

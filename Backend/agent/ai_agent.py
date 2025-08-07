@@ -56,7 +56,7 @@ def create_agent():
     - task11: Nếu yêu cầu liên quan đến kiểm tra yêu cầu về lưu lượng nước trong file thuyết minh PDF.
     - task9: Nếu yêu cầu liên quan đến nhận diện trụ cứu hỏa và khoảng cách giữa các trụ cứu hỏa.
     - task2: Nếu yêu cầu liên quan đến kiểm tra chiều rộng đường nội bộ hoặc bãi đỗ xe chữa cháy.
-    - task5: Nếu yêu cầu liên quan đến kiểm tra có thể hiện đoạn dốc hay không.
+    - task5: Nếu yêu cầu liên quan đến kiểm tra có thể hiện đoạn dốc hay không. 
     - task6: Nếu yêu cầu liên quan đến đoạn tránh xe.
     - task4: Nếu yêu cầu lien quan đến khoảng cách từ mép đường tới tường nhà hoặc công trình.
     - task13: Nếu yêu cầu liên quan đến hệ thống thông tin liên lạc hoặc cung cấp điện.

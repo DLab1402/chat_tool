@@ -2,14 +2,10 @@ import ezdxf
 from ezdxf.entities import Dimension
 import numpy as np
 from ezdxf.addons.drawing import matplotlib
-layer_dat_nha_o='QH_DAT_NO_Nhaochungcu'
-layer_ranh_gioi_lap_quy_hoach=['QH_Ranh giới lập quy hoạch',
-                               'BV_Rg_lapquyhoach']
-layer_to_extract=['QH_DAT_NO_Nhaochungcu',
-                  '2_Visible_line',
-                  'QHDH_DAT_CTHTKT_DuongGT_CH',
-                  'QH_DAT_Cayxanhhanche'
-]
+import os
+import cv2
+from utils.global_backend import layer_to_extract_task4, layer_dat_nha_o_task4,layers_rg_qh
+
 # 3========================================D 
 def decode_dimtype(dimtype_value):
     """
@@ -129,10 +125,9 @@ def extract_dimensions_from_layer(dxf_file_path):
                     dim_style = doc.dimstyles.get(entity.dxf.dimstyle)
                     if dim_style and hasattr(dim_style.dxf, 'dimpost') and dim_style.dxf.dimpost == 'm':
                         dim_style.dxf.dimpost = "<>m"
-            elif entity.dxftype()=='LWPOLYLINE' and entity.dxf.layer.endswith(layer_dat_nha_o):
+            elif entity.dxftype()=='LWPOLYLINE' and entity.dxf.layer.endswith(layer_dat_nha_o_task4):
                     duong_nha_o.append(entity)
-            elif entity.dxftype()=='LWPOLYLINE' and (entity.dxf.layer.endswith(layer_ranh_gioi_lap_quy_hoach[0]) 
-                                                     or entity.dxf.layer.endswith(layer_ranh_gioi_lap_quy_hoach[1])):
+            elif entity.dxftype()=='LWPOLYLINE' and (entity.dxf.layer.endswith(tuple(layers_rg_qh))):
                 duong_rg_lapquyhoach.append(entity)
         dims_inside_ranh_gioi_lap_quy_hoach = get_dim_inside_ranh_dat(dims,duong_rg_lapquyhoach)
         for dim in dims_inside_ranh_gioi_lap_quy_hoach:
@@ -162,8 +157,8 @@ def extract_dimensions_from_layer(dxf_file_path):
                     if not dimension_classified:
                         extracted_dimensions['duong_nb'].append(extract_dimension_properties(dim))
                         duong_nb += 1
-            if dim.dxf.layer not in layer_to_extract:
-                layer_to_extract.append(dim.dxf.layer)  # Add layer to extract if not already present
+            if dim.dxf.layer not in layer_to_extract_task4:
+                layer_to_extract_task4.append(dim.dxf.layer)  # Add layer to extract if not already present
         print(f"Total dimension entities found: {len(dims)}")
         print(f"Tong duong nha o: {len(duong_nha_o)}")
         print(f"Tong mep duong dimensions found: {mep_duong}")    
@@ -331,7 +326,9 @@ def print_dimension_summary(dimensions_data):
     Args:
         dimensions_data (dict): Dictionary containing extracted dimensions
     """
-    results=[]
+    results={'Kết quả đường nội bộ': [],
+             'Mép đường': []
+             }
     if not dimensions_data:
         print("No dimensions data to display.")
         return
@@ -341,19 +338,21 @@ def print_dimension_summary(dimensions_data):
     if duong_nb > 0:
         print(f"\n--- Duong nb ---")
         for i, dim in enumerate(dimensions_data['duong_nb'], 1):
-            results.append(f"  Ký hiệu độ rộng đường nội bộ số {i} có kích thước là: {(dim['measurement']):.2f}m")
+            results['Kết quả đường nội bộ'].append(f"  Ký hiệu độ rộng đường nội bộ số {i} có kích thước là: {(dim['measurement']):.2f}m")
             print(f"  Ký hiệu độ rộng đường nội bộ số {i} có kích thước là: {(dim['measurement']):.2f}m")
     else:
         print(f"\n--- Duong nb ---")
+        results['Kết quả đường nội bộ'].append("Không tìm thấy bất kỳ ký hiệu độ rộng đường nội bộ nào.")
         print("Không tìm thấy bất kỳ ký hiệu độ rộng đường nội bộ nào.")
     # Print details of rotated dimensions
     if mep_duong > 0:
         print(f"\n--- mep_duong ---")
         for i, dim in enumerate(dimensions_data['mep_duong'], 1):
-            results.append(f"  Ký hiệu khoảng cách từ tường nhà tới mép đường số {i+duong_nb} có kích thước là: {(dim['measurement']):.2f}m")
+            results['Mép đường'].append(f"  Ký hiệu khoảng cách từ tường nhà tới mép đường số {i+duong_nb} có kích thước là: {(dim['measurement']):.2f}m")
             print(f"  Ký hiệu khoảng cách từ tường nhà tới mép đường số {i+duong_nb} có kích thước là: {(dim['measurement']):.2f}m")
     else:
         print(f"\n--- mep_duong ---")
+        results['Mép đường'].append("Không tìm thấy bất kỳ ký hiệu khoảng cách từ tường nhà tới mép đường nào.")
         print("Không tìm thấy bất kỳ ký hiệu khoảng cách từ tường nhà tới mép đường nào.")
     return results
 def annotate_dimensions(dims,msp,index=1):
@@ -379,13 +378,14 @@ def annotate_dimensions(dims,msp,index=1):
                             'lineweight':100}
             )
 # 3========================================D
-def main(dxf_file_path,output_path):
+def main(dxf_file_path,output_folder):
     """
     Main function to extract aligned dimensions from a DXF file and save them with bounding boxes.
     Args:
         dxf_file_path (str): Path to the DXF file
         output_path (str): Path to save the output DXF with bounding boxes
     """ 
+    output_path = os.path.join(output_folder, "Task4.png")
     doc = ezdxf.readfile(dxf_file_path)
     msp = doc.modelspace() 
     # Get only aligned dimensions
@@ -404,18 +404,15 @@ def main(dxf_file_path,output_path):
         annotate_dimensions(mep_duong, msp, index=len(do_rong_duong_nb)+1)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
         # Save the new DXF with bounding boxes
     for layer in doc.layers:
-        if (layer.dxf.name.endswith(tuple(layer_to_extract)) 
-            # or layer.dxf.name.endswith(layer_to_extract[1]) 
-            # or layer.dxf.name.endswith(layer_to_extract[2]) 
-            # or layer.dxf.name.endswith(layer_to_extract[3])
-            # or layer.dxf.name.endswith(layer_to_extract[6]) 
-            or layer.dxf.name == layer_dat_nha_o
+        if (layer.dxf.name.endswith(tuple(layer_to_extract_task4)) 
+            or layer.dxf.name == layer_dat_nha_o_task4
             or layer.dxf.name=='bounding_box'):
             layer.on()
         else:              
             layer.off()
     print("✅ All layers are set to ON for extraction.")
     matplotlib.qsave(doc.modelspace(), output_path,dpi=600, bg="#FFFFFF")
+
     return results
 
 # Example usage

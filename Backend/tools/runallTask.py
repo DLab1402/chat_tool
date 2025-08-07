@@ -75,7 +75,7 @@ def runallTask(session_dir):
     #Task 4
     task4 = runTask4(session_dir, single = False)
     if isinstance(task4,dict):
-        task4_text = json.dumps(task4.get("Mép"), ensure_ascii=False, indent=2)
+        task4_text = json.dumps(task4.get("Mép đường"), ensure_ascii=False, indent=2)
     else:
         task4_text = str(task4)
 

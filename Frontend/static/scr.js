@@ -100,11 +100,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (response.ok) {
       const data = await response.json();
-      chatBox.innerHTML += `${data.ai}`;
+      // if (typeof data.ai === "object") {
+      //   const message = data.ai.message || JSON.stringify(data.ai);
+      //   chatBox.innerHTML += `<div class="message ai">${message}</div>`;
+      // } else {
+      //   chatBox.innerHTML += `<div class="message ai">${data.ai}</div>`;
+      // }
+      // if ("id" in data){
+      //   id_image[`${data.id}`] = new ImageDisplayer(`${data.id}`,`${data.id}1`,`${data.id}2`);
+      //   console.log(id_image);
+      // }
+
+      // Luôn luôn append đúng nội dung HTML (không render object/json nữa)
+      chatBox.innerHTML += `<div class="message ai">${data.ai}</div>`;
+
+      // Nếu có id (ảnh), gắn event zoom vào ảnh theo id (không render id ra ngoài!)
       if ("id" in data){
         id_image[`${data.id}`] = new ImageDisplayer(`${data.id}`,`${data.id}1`,`${data.id}2`);
-        console.log(id_image);
+        // KHÔNG append id ra chatBox!
       }
+
     } else {
       chatBox.innerHTML += `${response.statusText}`;
     }

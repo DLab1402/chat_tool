@@ -9,6 +9,13 @@ def detect_slope(dxf_file, layers_to_check, output_image_path):
     doc = ezdxf.readfile(dxf_file)
     msp = doc.modelspace()
 
+    insert_entities = list(msp.query('INSERT')) 
+    for entity in insert_entities:
+        try:
+            entity.explode()
+        except Exception as e:
+            print(f"Lỗi explode block {entity.dxf.name}: {e}")   
+
     blocks = []
     for entity in msp.query('INSERT'):
         if entity.dxf.name == 'CD1':
@@ -89,7 +96,7 @@ def detect_slope(dxf_file, layers_to_check, output_image_path):
         # Tính angle theo độ
         angle_deg = round(math.degrees(math.atan((z2 - z1) / distance)), 3)
 
-        if angle_deg > 0:
+        if angle_deg > 1:
             count += 1
             angle_degs.append(angle_deg)
 

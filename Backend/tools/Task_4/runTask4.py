@@ -1,5 +1,7 @@
 import os
 import sys
+import cv2
+import numpy as np
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
@@ -18,14 +20,21 @@ def runTask4(session_dir, single=True):
     dxf_file = dxf_files[0]
 
     try:
-        result = main(dxf_file, output_folder)
+        result= main(dxf_file, output_folder)
+        
     except Exception as e:
         return f"Error: {e}"
+    # result= main(dxf_file, output_folder)
+
+    # Kiểm tra kết quả trả về từ hàm main
+    if not isinstance(result, dict):
+        return "Kết quả không hợp lệ từ Task 4"
 
     if single:
-        if isinstance(result, list):
-            result_dict = {"Kết quả": item for i, item in enumerate(result)}
-            return dict_to_chat_html_with_cv2_image(result_dict)
+        output_image_path = os.path.join(output_folder, "Task4.png")
+        if os.path.exists(output_image_path):
+            image_data = cv2.imread(output_image_path)
+            result["Hình ảnh"] = image_data
         return dict_to_chat_html_with_cv2_image(result)
 
     return result

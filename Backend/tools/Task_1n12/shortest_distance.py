@@ -5,23 +5,9 @@ import pytesseract
 from pytesseract import Output
 import ezdxf
 from ezdxf.addons.drawing import matplotlib
-
+from utils.global_backend import layers_to_extract_task1, layers_block_task1, layers_rg_qh
 target_entity_types=['TEXT','MTEXT','LINE', 'POLYLINE', 'LWPOLYLINE']
-layers_to_extract=['TAD - TEXT',
-                    'BBOX',
-                    # 'BTN_MD_Xref_TongThe$0$QH_DAT_NO_Nhaochungcu'
-                    # 'xref_bct2_tong the$0$QH_DAT_NO_Nhaochungcu', # do_an 2
-                    # 'xref_bct2_tong the$0$2_Visible line'
-                    # 'BCP_MD_Xref_MBTT$0$$0$QH_DAT_NO_Nhaochungcu' #do an 5
-                    ]
-layers_block=['QH_DAT_NO_Nhaochungcu','2_Visible line',]
-layers_rg_qh=['BV_Rg_lapquyhoach',
-                'QH_Ranh giới lập quy hoạch' #do an 2'
-                # 'BCP_MD_Xref_Ranhdat$0$BV_Rg_lapquyhoach'   #do an 5
-                # 'BTN_MD_Xref_TongThe$0$BV_Rg_lapquyhoach'
-                # 'xref_bct2_tong the$0$210129_BConsAnbinh$0$QH_Ranh giới lập quy hoạch' #do an 2
-                # 'BTV_MD_Xref_TongThe$0$BV_Rg_lapquyhoach'
-            ]
+
 def load_image(image_path):
     image = cv2.imread(image_path)
     if image is None:
@@ -207,9 +193,8 @@ def convert_dxf_to_png(dxf_file, output_dir, target_entity_types, layers_to_extr
 
     def filter_entities(entity):
         """Filter function for matplotlib rendering"""
-        return entity.dxftype() in target_entity_types and (entity.dxf.layer in layers_to_extract 
-                                                            or entity.dxf.layer.endswith(layers_block[0])
-                                                            or entity.dxf.layer.endswith(layers_block[1]))
+        return entity.dxftype() in target_entity_types and (entity.dxf.layer in layers_to_extract_task1 
+                                                            or entity.dxf.layer.endswith(tuple(layers_block_task1)))
     # Read DXF and process
     doc = ezdxf.readfile(dxf_file)
     msp = doc.modelspace()
@@ -221,7 +206,7 @@ def convert_dxf_to_png(dxf_file, output_dir, target_entity_types, layers_to_extr
     max_area=0
     max_bbox=tuple()
     for entity in msp:
-        if entity.dxftype()=='LWPOLYLINE' and entity.dxf.layer.endswith(layers_rg_qh[1]):
+        if entity.dxftype()=='LWPOLYLINE' and entity.dxf.layer.endswith(layers_rg_qh):
             area,height,width,bbox=get_lwpolyline_bounding_box(entity)
             if area >max_area:
                 max_area=area
@@ -292,7 +277,7 @@ def process_single_dxf(dxf_path, image_folder=None, result_folder=None):
     output_image_path = os.path.join(image_folder, "Task_1_12.png")
     image, scale_factor, _ =convert_dxf_to_png(dxf_file=dxf_path,output_dir=output_image_path,
                                       target_entity_types=target_entity_types,
-                                      layers_to_extract=layers_to_extract)
+                                      layers_to_extract=layers_to_extract_task1)
     print("✅ DXF file processed and images exported.")
     if image is None:
         raise RuntimeError("Failed to load generated images")

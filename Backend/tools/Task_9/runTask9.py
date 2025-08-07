@@ -6,7 +6,6 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from utils.file_classifier import classify_input_files
 from utils.decorator import dict_to_chat_html_with_cv2_image
 from tools.Task_9.converter import draw_trucuuhoa_distances
-
 def runTask9(session_dir, single=True):
     input_folder = os.path.join(session_dir, "input")
     output_folder = os.path.join(session_dir, "output")
@@ -26,8 +25,9 @@ def runTask9(session_dir, single=True):
     except Exception as e:
         return f"Error: {e}"
 
-    if isinstance(result, dict) and "error" in result:
-        return result["error"]
+    # Đảm bảo kết quả có định dạng đúng
+    if "Trụ cứu hỏa" not in result:
+        result["Trụ cứu hỏa"] = "Không có dữ liệu về Trụ cứu hỏa"
 
     if single:
         return dict_to_chat_html_with_cv2_image(result)

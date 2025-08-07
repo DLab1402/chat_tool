@@ -4,13 +4,8 @@ from tools.Task_5.main import detect_slope
 import os
 import glob
 import cv2
-
+from utils.global_backend import layers_to_check_5
 def runTask5(session_dir, single = True):
-
-    layers_to_check = [
-    "xref_bct2_tong the$0$QH_DAT_CTHTKT_DuongGT",
-    "xref_bct2_tong the$0$QHDH_DAT_CTHTKT_DuongGT_CH",
-    ] 
 
     input_folder = os.path.join(session_dir, "input")
     output_folder = os.path.join(session_dir, "output")
@@ -26,7 +21,7 @@ def runTask5(session_dir, single = True):
     output_image_path = os.path.join(output_folder, "output_slope.png")
 
     try:
-        block_pairs, count, angle_degs = detect_slope(dxf_file, layers_to_check, output_image_path)
+        block_pairs, count, angle_degs = detect_slope(dxf_file, layers_to_check_5, output_image_path)
     except Exception as e:
         return f"Error: {e}"
     
