@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Request, Form, UploadFile, File
-from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse,StreamingResponse
 from fastapi.templating import Jinja2Templates
 from typing import List
 import requests
@@ -91,3 +91,18 @@ async def logout(request: Request):
         request.session.clear()
     except:
         pass
+
+@router.get("/download")
+async def download(request:Request):
+    session_id = request.session.get("session_id")
+    print(session_id)
+    response = requests.post(
+            url=f"http://127.0.0.1:8001/download/{session_id}",
+            stream=True
+        )
+    print(response)
+    return StreamingResponse(
+        response.iter_content(chunk_size=8192),
+        media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        headers={"Content-Disposition": "attachment; filename=ket_qua_doi_chieu.docx"}
+    )

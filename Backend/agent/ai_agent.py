@@ -190,13 +190,14 @@ def create_agent():
 
     @app.post("/download/{session_id}")
     async def download_result(session_id: str):
-        file_path = os.path.join(UPLOAD_DIR, f"session_{session_id}", "output", "Ket_qua_doi_chieu.doc")
+        file_path = os.path.join(UPLOAD_DIR, session_id, "output", "Ket_qua_doi_chieu.doc")
+        print(session_id)
         print("File path:", file_path)
 
-        if os.path.exists(file_path):
+        if os.path.exists(r"D:\bcons_app\bcons_app\Backend\utils\Bảng đối chiếu quy hoạch.docx"):
             print("✅ File exists, returning it.")
             return FileResponse(
-                path=file_path,
+                path=r"D:\bcons_app\bcons_app\Backend\utils\Bảng đối chiếu quy hoạch.docx",
                 filename="Ket_qua_doi_chieu.doc",
                 media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
             )
