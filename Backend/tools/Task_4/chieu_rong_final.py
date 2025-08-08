@@ -4,20 +4,8 @@ import numpy as np
 from ezdxf.addons.drawing import matplotlib
 import os
 import cv2
-<<<<<<< HEAD
-
-layer_dat_nha_o='QH_DAT_NO_Nhaochungcu'
-layer_ranh_gioi_lap_quy_hoach=['QH_Ranh giới lập quy hoạch',
-                               'BV_Rg_lapquyhoach']
-layer_to_extract=['QH_DAT_NO_Nhaochungcu',
-                  '2_Visible_line',
-                  'QHDH_DAT_CTHTKT_DuongGT_CH',
-                  'QH_DAT_Cayxanhhanche'
-]
-=======
 from utils.global_backend import layer_to_extract_task4, layer_dat_nha_o_task4,layers_rg_qh
 
->>>>>>> 12b9bf1f42dfabaed6476ad55559541f2254a92a
 # 3========================================D 
 def decode_dimtype(dimtype_value):
     """
@@ -416,13 +404,8 @@ def main(dxf_file_path,output_folder):
         annotate_dimensions(mep_duong, msp, index=len(do_rong_duong_nb)+1)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
         # Save the new DXF with bounding boxes
     for layer in doc.layers:
-<<<<<<< HEAD
-        if (layer.dxf.name.endswith(tuple(layer_to_extract)) 
-            or layer.dxf.name == layer_dat_nha_o
-=======
         if (layer.dxf.name.endswith(tuple(layer_to_extract_task4)) 
             or layer.dxf.name == layer_dat_nha_o_task4
->>>>>>> 12b9bf1f42dfabaed6476ad55559541f2254a92a
             or layer.dxf.name=='bounding_box'):
             layer.on()
         else:              
