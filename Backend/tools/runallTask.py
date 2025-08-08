@@ -30,140 +30,140 @@ def runallTask(session_dir):
 
     OUTPUT_PATH = output_folder + "\Ket_qua_doi_chieu.doc"
    
-    #Task 1
-    task1n12 = runTask1n12(session_dir, single = False)
-    if isinstance(task1n12,dict):
-        task1_text = json.dumps(task1n12.get("Khoảng cách giữa các khối nhà"), ensure_ascii=False, indent=2)
-        task12_text = json.dumps(task1n12.get("Diện tích"), ensure_ascii=False, indent=2)
-    else:
-        task1_text = str(task1n12)
-        task12_text = str(task1n12)
+    # #Task 1
+    # task1n12 = runTask1n12(session_dir, single = False)
+    # if isinstance(task1n12,dict):
+    #     task1_text = json.dumps(task1n12.get("Khoảng cách giữa các khối nhà"), ensure_ascii=False, indent=2)
+    #     task12_text = json.dumps(task1n12.get("Diện tích"), ensure_ascii=False, indent=2)
+    # else:
+    #     task1_text = str(task1n12)
+    #     task12_text = str(task1n12)
     
-    output_collector(
-        task1_text,
-        TEMPLATE_PATH,
-        OUTPUT_PATH,
-        lambda res: llm_compare_func_gemini_task1(res, api_key=API_KEY),
-        task="task1"
-    )
+    # output_collector(
+    #     task1_text,
+    #     TEMPLATE_PATH,
+    #     OUTPUT_PATH,
+    #     lambda res: llm_compare_func_gemini_task1(res, api_key=API_KEY),
+    #     task="task1"
+    # )
 
-    #Task 2
+    # #Task 2
     
-    task2 = runTask2(session_dir, single = False)
-    if isinstance(task2,dict):
-        task2_text = json.dumps(task2.get("Kết quả"), ensure_ascii=False, indent=2)
-    else:
-        task2_text = str(task2)
-    output_collector(
-        task2_text,
-        OUTPUT_PATH,
-        OUTPUT_PATH,
-        lambda res: llm_compare_func_gemini_task2(res, api_key=API_KEY),
-        task="task2"
-    )
+    # task2 = runTask2(session_dir, single = False)
+    # if isinstance(task2,dict):
+    #     task2_text = json.dumps(task2.get("Kết quả"), ensure_ascii=False, indent=2)
+    # else:
+    #     task2_text = str(task2)
+    # output_collector(
+    #     task2_text,
+    #     OUTPUT_PATH,
+    #     OUTPUT_PATH,
+    #     lambda res: llm_compare_func_gemini_task2(res, api_key=API_KEY),
+    #     task="task2"
+    # )
 
-    #Task 3
-    task3_text = runTask3(session_dir)
-    output_collector(
-        task3_text,
-        OUTPUT_PATH,
-        OUTPUT_PATH,
-        lambda res: llm_compare_func_gemini_task3(res, api_key=API_KEY),
-        task="task3"
-    )
+    # #Task 3
+    # task3_text = runTask3(session_dir)
+    # output_collector(
+    #     task3_text,
+    #     OUTPUT_PATH,
+    #     OUTPUT_PATH,
+    #     lambda res: llm_compare_func_gemini_task3(res, api_key=API_KEY),
+    #     task="task3"
+    # )
 
-    #Task 4
-    task4 = runTask4(session_dir, single = False)
-    if isinstance(task4,dict):
-        task4_text = json.dumps(task4.get("Mép đường"), ensure_ascii=False, indent=2)
-    else:
-        task4_text = str(task4)
+    # #Task 4
+    # task4 = runTask4(session_dir, single = False)
+    # if isinstance(task4,dict):
+    #     task4_text = json.dumps(task4.get("Mép đường"), ensure_ascii=False, indent=2)
+    # else:
+    #     task4_text = str(task4)
 
-    output_collector(
-        task4_text,
-        OUTPUT_PATH,
-        OUTPUT_PATH,
-        lambda res: llm_compare_func_gemini_task4(res, api_key=API_KEY),
-        task="task4"
-    )
+    # output_collector(
+    #     task4_text,
+    #     OUTPUT_PATH,
+    #     OUTPUT_PATH,
+    #     lambda res: llm_compare_func_gemini_task4(res, api_key=API_KEY),
+    #     task="task4"
+    # )
 
-    #Task 5
-    task5 = runTask5(session_dir, single = False)
-    if isinstance(task5,dict):
-        task5_text = json.dumps(task5.get("Kết quả"), ensure_ascii=False, indent=2)
-    else:
-        task5_text = str(task5)
+    # #Task 5
+    # task5 = runTask5(session_dir, single = False)
+    # if isinstance(task5,dict):
+    #     task5_text = json.dumps(task5.get("Kết quả"), ensure_ascii=False, indent=2)
+    # else:
+    #     task5_text = str(task5)
 
-    output_collector(
-        task5_text,
-        OUTPUT_PATH,
-        OUTPUT_PATH,
-        lambda res: llm_compare_func_gemini_task5(res, api_key=API_KEY),
-        task="task5"
-    )
+    # output_collector(
+    #     task5_text,
+    #     OUTPUT_PATH,
+    #     OUTPUT_PATH,
+    #     lambda res: llm_compare_func_gemini_task5(res, api_key=API_KEY),
+    #     task="task5"
+    # )
 
-    #Task 6
-    task6 = runTask6(session_dir, single = False)
-    if isinstance(task6,dict):
-        task6_text = json.dumps(task6.get("Đoạn tránh xe"), ensure_ascii=False, indent=2)
-    else:
-        task6_text = str(task6)
+    # #Task 6
+    # task6 = runTask6(session_dir, single = False)
+    # if isinstance(task6,dict):
+    #     task6_text = json.dumps(task6.get("Đoạn tránh xe"), ensure_ascii=False, indent=2)
+    # else:
+    #     task6_text = str(task6)
 
-    output_collector(
-        task6_text,
-        OUTPUT_PATH,
-        OUTPUT_PATH,
-        lambda res: llm_compare_func_gemini_task6(res, api_key=API_KEY),
-        task="task6"
-    )
+    # output_collector(
+    #     task6_text,
+    #     OUTPUT_PATH,
+    #     OUTPUT_PATH,
+    #     lambda res: llm_compare_func_gemini_task6(res, api_key=API_KEY),
+    #     task="task6"
+    # )
 
-    #Task 9
-    task9 = runTask9(session_dir, single = False)
-    if isinstance(task9,dict):
-        task9_text = json.dumps(task9.get("Trụ cứu hỏa"), ensure_ascii=False, indent=2)
-    else:
-        task9_text = str(task9)
+    # #Task 9
+    # task9 = runTask9(session_dir, single = False)
+    # if isinstance(task9,dict):
+    #     task9_text = json.dumps(task9.get("Trụ cứu hỏa"), ensure_ascii=False, indent=2)
+    # else:
+    #     task9_text = str(task9)
     
-    output_collector(
-        task9_text,
-        OUTPUT_PATH,
-        OUTPUT_PATH,
-        lambda res: llm_compare_func_gemini_task9(res, api_key=API_KEY),
-        task="task9"
-    )
+    # output_collector(
+    #     task9_text,
+    #     OUTPUT_PATH,
+    #     OUTPUT_PATH,
+    #     lambda res: llm_compare_func_gemini_task9(res, api_key=API_KEY),
+    #     task="task9"
+    # )
 
-    #Task 11
-    task11_text = runTask11(session_dir)
-    output_collector(
-        task11_text,
-        OUTPUT_PATH,
-        OUTPUT_PATH,
-        lambda res: llm_compare_func_gemini_task11(res, api_key=API_KEY),
-        task="task11"
-    )
+    # #Task 11
+    # task11_text = runTask11(session_dir)
+    # output_collector(
+    #     task11_text,
+    #     OUTPUT_PATH,
+    #     OUTPUT_PATH,
+    #     lambda res: llm_compare_func_gemini_task11(res, api_key=API_KEY),
+    #     task="task11"
+    # )
 
-    #Task 12
-    output_collector(
-        task12_text,
-        OUTPUT_PATH,
-        OUTPUT_PATH,
-        lambda res: llm_compare_func_gemini_task12(res, api_key=API_KEY),
-        task="task12"
-    )
+    # #Task 12
+    # output_collector(
+    #     task12_text,
+    #     OUTPUT_PATH,
+    #     OUTPUT_PATH,
+    #     lambda res: llm_compare_func_gemini_task12(res, api_key=API_KEY),
+    #     task="task12"
+    # )
 
-    #Task 13
-    task13 = runTask13(session_dir, single = False)
-    if isinstance(task13,dict):
-        task13_text = json.dumps(task13.get("Tủ điện") + task13.get("Đường dây liên lạc"), ensure_ascii=False, indent=2)
-    else:
-        task13_text = str(task13)
+    # #Task 13
+    # task13 = runTask13(session_dir, single = False)
+    # if isinstance(task13,dict):
+    #     task13_text = json.dumps(task13.get("Tủ điện") + task13.get("Đường dây liên lạc"), ensure_ascii=False, indent=2)
+    # else:
+    #     task13_text = str(task13)
 
-    output_collector(
-        task13_text,
-        OUTPUT_PATH,
-        OUTPUT_PATH,
-        lambda res: llm_compare_func_gemini_task13(res, api_key=API_KEY),
-        task="task13"
-    )
+    # output_collector(
+    #     task13_text,
+    #     OUTPUT_PATH,
+    #     OUTPUT_PATH,
+    #     lambda res: llm_compare_func_gemini_task13(res, api_key=API_KEY),
+    #     task="task13"
+    # )
 
     return "<a href='http://"+FORNTEND_IP+":"+str(FRONTEND_PORT)+"/download' download>Click: Kết quả đối chiếu.</a>"
