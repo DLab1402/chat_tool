@@ -24,6 +24,11 @@ def runTask4(session_dir, single=True):
         
     except Exception as e:
         return f"Error: {e}"
+    # result= main(dxf_file, output_folder)
+
+    # Kiểm tra kết quả trả về từ hàm main
+    if not isinstance(result, dict):
+        return "Kết quả không hợp lệ từ Task 4"
 
     # Kiểm tra kết quả trả về từ hàm main
     if not isinstance(result, dict):

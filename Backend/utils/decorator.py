@@ -44,4 +44,4 @@ def dict_to_chat_html_with_cv2_image(data: Dict[str, any]) -> str:
             elif isinstance(value,str):
                 html_lines.append(f'<div><strong>{key}</strong>: {value}.</div>')
 
-    return {"html":'\n'.join(html_lines),"id":timestamp}
+    return {"html": '<br>'.join(html_lines), "id": timestamp}

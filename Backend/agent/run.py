@@ -6,7 +6,7 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from utils.global_backend import BACKEND_IP,BACKTEND_PORT,UPLOAD_DIR
+from utils.global_backend import BACKEND_IP,BACKTEND_PORT, UPLOAD_DIR
 
 for item in os.listdir(UPLOAD_DIR):
     item_path = os.path.join(UPLOAD_DIR, item)

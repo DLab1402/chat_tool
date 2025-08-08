@@ -1,11 +1,9 @@
 import ezdxf
 import math
 import matplotlib.pyplot as plt
-import os
 from tools.Task_9.dxf_to_png import convert_dxf_to_png
-
-layer_cuuhoa = "trucuuhoa"
-layer_to_check = [layer_cuuhoa, "xref_bct2_tong the$0$QH_DAT_CTHTKT_DuongGT"]
+from utils.global_backend import layer_cuuhoa, layer_GTNB_9
+layer_to_check = [layer_cuuhoa, layer_GTNB_9]
 
 def draw_trucuuhoa_distances(input_filename, output_filename1, output_filename2, layer_cuuhoa=layer_cuuhoa, layer_to_check=layer_to_check):
     # Load bản vẽ

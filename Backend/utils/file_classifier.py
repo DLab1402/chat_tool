@@ -4,7 +4,7 @@ from typing import Dict, List
 # Mapping giữa task và mã QH cần dùng
 TASK_QH_MAPPING = {
     "task1": "QH02",
-    "task2": "QH03",
+    "task2": "QH03-BV",
     "task3": "PDF",
     "task4": "QH02",
     "task5": "QH03",

@@ -42,47 +42,38 @@ def output_collector(result_text, word_template_path, word_output_path, llm_comp
     col_noi_dung_thiet_ke = pos["col_noi_dung"]  
     col_ket_luan = pos["col_ket_luan"]
     if len(table.rows) <= row or len(table.columns) <= max(col_noi_dung_thiet_ke, col_ket_luan):
-        print(f"[output_collector] Bảng không đủ hàng/cột: rows={len(table.rows)}, cols={len(table.columns)}")
         return
+
+    # Xử lý kết quả để loại bỏ các dấu [], "", và ''
+    result_text = result_text.replace("[", "").replace("]", "").replace("\"", "").replace("'", "")
+
+    # Kiểm tra nếu result_text là null
+    if result_text.lower() == "null":
+        result_text = "Không có dữ liệu hợp lệ"
+
     # Ghi kết quả tool vào cột 'Nội dung thiết kế'
     cell = table.cell(row, col_noi_dung_thiet_ke)
     cell.text = result_text
     for p in cell.paragraphs:
-        for run in p.runs:
-            run.font.name = 'Times New Roman'
-            run._element.rPr.rFonts.set(qn('w:eastAsia'), 'Times New Roman')
-            run.font.size = Pt(11)
-
-    # Lấy quy chuẩn từ RAG
-    #rag_standard = search_standard(task=task)
-    #quy_chuan_text = rag_standard["standard"] if rag_standard else ""
+        p.style.font.name = "Times New Roman"
+        p.style.font.size = Pt(12)
 
     # Nếu có hàm LLM đối chiếu thì sinh kết luận và ghi vào cột 'Kết luận'
     if llm_compare_func is not None:
         try:
-            ket_luan = llm_compare_func(result_text), #quy_chuan_text )
-            print(f"[DEBUG] Kết luận sinh bởi LLM: {ket_luan}")
+            conclusion = llm_compare_func(result_text)
+            cell_ket_luan = table.cell(row, col_ket_luan)
+            cell_ket_luan.text = conclusion
+            for p in cell_ket_luan.paragraphs:
+                p.style.font.name = "Times New Roman"
+                p.style.font.size = Pt(12)
         except Exception as e:
-            ket_luan = f"Lỗi gọi LLM: {e}"
-            print(f"[DEBUG] Lỗi khi gọi LLM: {e}")
-        try:
-            cell2 = table.cell(row, col_ket_luan)
-            cell2.text = ket_luan
-            print(f"[DEBUG] Đã ghi kết luận vào bảng tại dòng {row + 1}, cột {col_ket_luan + 1}")
-            # Đặt font Times New Roman, cỡ 11 cho cột Kết luận
-            for p in cell2.paragraphs:
-                for run in p.runs:
-                    run.font.name = 'Times New Roman'
-                    run._element.rPr.rFonts.set(qn('w:eastAsia'), 'Times New Roman')
-                    run.font.size = Pt(11)
-        except Exception as e:
-            print(f"[DEBUG] Lỗi khi ghi kết luận vào bảng: {e}")
+            print(f"Error generating conclusion: {e}")
 
     try:
         doc.save(word_output_path)
-        print(f"[DEBUG] Đã lưu file kết quả: {word_output_path}")
     except Exception as e:
-        print(f"[DEBUG] Lỗi khi lưu file kết quả: {e}")
+        print(f"Error saving document: {e}")
 
 def llm_compare_func_gemini(result_text, api_key, model="models/gemini-1.5-pro"): #standard_text,
     """
@@ -114,12 +105,16 @@ def llm_compare_func_gemini(result_text, api_key, model="models/gemini-1.5-pro")
 
 def llm_compare_func_gemini_task1(result_text, api_key, model="models/gemini-1.5-pro"): 
     prompt = f"""
+    Hãy trả lời ngắn gọn, rõ ràng.
+    Không dùng dấu ngoặc kép ("") hoặc dấu ba chấm (...).
+    Trình bày theo cách dễ đọc, súc tích, không rườm rà.
+
     Bạn là chuyên gia kiểm định xây dựng. Hãy kiểm tra nội dung thiết kế sau và PHẢI đưa ra kết luận theo định dạng trong dấu "..." như ví dụ ở dưới, (nếu có số liệu thì ghi vào) không được ghi thêm:
 
     Nội dung thiết kế: "{result_text}".
     
     ĐÂY LÀ VÍ DỤ VỀ CÁCH VIẾT KẾT LUẬN:
-    Nếu nội dung thiết kế không có thông tin về bậc chịu lửa và cấp nguy hiểm cháy của nhà thì kết luận nguyên văn là "Chưa thể kết luận đạt hay không đạt vì chưa rõ thông tin về bậc chịu lửa và cấp nguy hiểm cháy của nhà."
+    Nếu nội dung thiết kế chỉ có khoảng cách giữa các khối nhà mà không có thông tin về bậc chịu lửa và cấp nguy hiểm cháy của nhà thì kết luận nguyên văn là: Chưa thể kết luận đạt hay không đạt vì chưa rõ thông tin về bậc chịu lửa và cấp nguy hiểm cháy của nhà.
    """
     url = f"https://generativelanguage.googleapis.com/v1beta/{model}:generateContent?key={api_key}"
     headers = {"Content-Type": "application/json"}
@@ -132,12 +127,21 @@ def llm_compare_func_gemini_task1(result_text, api_key, model="models/gemini-1.5
     
 def llm_compare_func_gemini_task2(result_text, api_key, model="models/gemini-1.5-pro"): 
     prompt = f"""
+    Hãy trả lời ngắn gọn, rõ ràng.
+    Không dùng dấu ngoặc kép ("") hoặc dấu ba chấm (...).
+    Trình bày theo cách dễ đọc, súc tích, không rườm rà.
+
     Bạn là chuyên gia kiểm định xây dựng. Hãy kiểm tra nội dung thiết kế sau và PHẢI đưa ra kết luận theo định dạng trong dấu "..." như ví dụ ở dưới, (nếu có số liệu thì ghi vào) không được ghi thêm:
 
     Nội dung thiết kế: "{result_text}".
 
+    Ở đây có hai đối tượng để kiểm tra, một là độ rộng đường nội bộ và hai là bãi đỗ xe chữa cháy. Nếu như độ rộng đường nội bộ lớn hơn 3,5m thì là đạt, còn nếu độ rộng của bãi đỗ xe chữa cháy lớn hơn 6m là đạt.
+
     ĐÂY LÀ VÍ DỤ VỀ CÁCH VIẾT KẾT LUẬN:
-    Nếu nội dung thiết kế không có thông tin về chiều cao phòng cháy chữa cháy thì kết luận nguyên văn là "Chưa thể kết luận bãi đỗ xe chữa cháy đạt hay không đạt vì thiếu thông tin về chiều cao phòng cháy chữa cháy của nhà."
+    Nếu như nội dung thiết kế có ghi số liệu về chiều rộng đường nội bộ và bãi đỗ xe chữa cháy và cả hai đều đạt thì kết luận nguyên văn là: Đạt vì chiều rộng đường đường và độ rộng bãi đỗ xe đã đạt quy chuẩn.
+    Nếu như nội dung thiết kế có ghi số liệu về chiều rộng đường nội bộ và bãi đỗ xe chữa cháy nhưng chỉ một trong hai đạt thì kết luận nguyên văn là: Chưa đạt vì (ghi đối tượng ra là độ rộng đường hay độ rộng bãi đỗ xe chữa cháy) chưa đạt quy chuẩn.
+    Nếu như nội dung thiết kế không có thông tin về chiều rộng đường nội bộ hoặc độ rộng bãi đỗ xe chữa cháy thì kết luận nguyên văn là: Chưa đạt vì (ghi đối tượng không có số liệu) chưa có số liệu về chiều rộng.
+    
    """
     url = f"https://generativelanguage.googleapis.com/v1beta/{model}:generateContent?key={api_key}"
     headers = {"Content-Type": "application/json"}
@@ -150,13 +154,17 @@ def llm_compare_func_gemini_task2(result_text, api_key, model="models/gemini-1.5
     
 def llm_compare_func_gemini_task3(result_text, api_key, model="models/gemini-1.5-pro"): 
     prompt = f"""
+    Hãy trả lời ngắn gọn, rõ ràng.
+    Không dùng dấu ngoặc kép ("") hoặc dấu ba chấm (...).
+    Trình bày theo cách dễ đọc, súc tích, không rườm rà.
+
     Bạn là chuyên gia kiểm định xây dựng. Hãy kiểm tra nội dung thiết kế sau và PHẢI đưa ra kết luận theo định dạng trong dấu "..." như ví dụ ở dưới, (nếu có số liệu thì ghi vào) không được ghi thêm:
 
     Nội dung thiết kế: "{result_text}"
 
     ĐÂY LÀ VÍ DỤ VỀ CÁCH VIẾT KẾT LUẬN:
 
-    Nếu nội dung thiết kế có ghi số liệu về tải trọng nền nền đường cho xe, bãi đỗ nhưng không có thông tin về yêu cầu của cơ quan cảnh sát phòng cháy chữa cháy thì kết luận nguyên văn là "Có ghi số liệu về tải trọng nền đường cho xe, bãi đỗ (ghi số liệu cụ thể như nội dung thiết kế nếu có) nhưng chưa rõ yêu cầu của cơ quan cảnh sát phòng cháy chữa cháy nên chưa thể kết luận." Nếu không có thông tin về tải trọng nền đường thì kết luận nguyên văn là "Không đạt vì không có thông tin về tải trọng nền đường cho xe, bãi đỗ." Nếu có thông tin về tải trọng nền đường cho xe, bãi đỗ và có yêu cầu của cơ quan cảnh sát phòng cháy chữa cháy thì so sánh rồi tự ghi kết luận ngắn gọn. 
+    Nếu nội dung thiết kế có ghi số liệu về tải trọng nền nền đường cho xe, bãi đỗ nhưng không có thông tin về yêu cầu của cơ quan cảnh sát phòng cháy chữa cháy thì kết luận nguyên văn là: Có ghi số liệu về tải trọng nền đường cho xe, bãi đỗ (ghi số liệu cụ thể như nội dung thiết kế nếu có) nhưng chưa rõ yêu cầu của cơ quan cảnh sát phòng cháy chữa cháy nên chưa thể kết luận. Nếu không có thông tin về tải trọng nền đường thì kết luận nguyên văn là: Không đạt vì không có thông tin về tải trọng nền đường cho xe, bãi đỗ. Nếu có thông tin về tải trọng nền đường cho xe, bãi đỗ và có yêu cầu của cơ quan cảnh sát phòng cháy chữa cháy thì so sánh rồi tự ghi kết luận ngắn gọn. 
     """
     url = f"https://generativelanguage.googleapis.com/v1beta/{model}:generateContent?key={api_key}"
     headers = {"Content-Type": "application/json"}
@@ -169,16 +177,20 @@ def llm_compare_func_gemini_task3(result_text, api_key, model="models/gemini-1.5
 
 def llm_compare_func_gemini_task4(result_text, api_key, model="models/gemini-1.5-pro"): 
     prompt = f"""
+    Hãy trả lời ngắn gọn, rõ ràng.
+    Không dùng dấu ngoặc kép ("") hoặc dấu ba chấm (...).
+    Trình bày theo cách dễ đọc, súc tích, không rườm rà.
+
     Bạn là chuyên gia kiểm định xây dựng. Hãy kiểm tra nội dung thiết kế sau và PHẢI đưa ra kết luận theo định dạng trong dấu "..." như ví dụ ở dưới, (nếu có số liệu thì ghi vào) không được ghi thêm:
 
     Nội dung thiết kế: "{result_text}".
-    Cách kiểm tra khoảng cách từ mép đường tới tường nhà hoặc công trình có đạt hay không là: Nếu khoảng cách đó không lớn hơn 10m thì là đạt, nếu lớn hơn 10m thì không đạt.
+    Cách kiểm tra khoảng cách từ mép đường tới tường nhà hoặc công trình có đạt hay không là: Nếu khoảng cách đó nhỏ hơn 10m thì là đạt, nếu lớn hơn 10m thì không đạt.
 
     ĐÂY LÀ VÍ DỤ VỀ CÁCH VIẾT KẾT LUẬN: 
 
-    Nếu nội dung thiết kế có ghi khoảng cách từ mép đường tới tường nhà hoặc công trình và khoảng cách này đạt thì kết luận nguyên văn là "Khoảng cách từ mép đường tới tường nhà hoặc công trình là (ghi số liệu cụ thể như trong nội dung thiết kế nếu có) và đạt yêu cầu." 
-    Nếu nội dung thiết kế có ghi khoảng cách từ mép đường tới tường nhà hoặc công trình và khoảng cách này không đạt thì kết luận nguyên văn là "Khoảng cách từ mép đường tới tường nhà hoặc công trình là (ghi số liệu cụ thể như trong nội dung thiết kế nếu có) và không đạt yêu cầu."
-    Nếu không có thông tin về khoảng cách này thì kết luận nguyên văn là "Không đạt vì không có thông tin về khoảng cách từ mép đường tới tường nhà hoặc công trình."
+    Nếu nội dung thiết kế có ghi khoảng cách từ mép đường tới tường nhà hoặc công trình và khoảng cách này đạt thì kết luận nguyên văn là: Khoảng cách từ mép đường tới tường nhà hoặc công trình là (ghi số liệu cụ thể như trong nội dung thiết kế nếu có) và đạt yêu cầu.
+    Nếu nội dung thiết kế có ghi khoảng cách từ mép đường tới tường nhà hoặc công trình và khoảng cách này không đạt thì kết luận nguyên văn là: Khoảng cách từ mép đường tới tường nhà hoặc công trình là (ghi số liệu cụ thể như trong nội dung thiết kế nếu có) và không đạt yêu cầu.
+    Nếu không có thông tin về khoảng cách từ mép đường tới tường nhà thì kết luận nguyên văn là: Không đạt vì không có thông tin về khoảng cách từ mép đường tới tường nhà hoặc công trình.
     """
     url = f"https://generativelanguage.googleapis.com/v1beta/{model}:generateContent?key={api_key}"
     headers = {"Content-Type": "application/json"}
@@ -191,13 +203,17 @@ def llm_compare_func_gemini_task4(result_text, api_key, model="models/gemini-1.5
     
 def llm_compare_func_gemini_task5(result_text, api_key, model="models/gemini-1.5-pro"): 
     prompt = f"""
+    Hãy trả lời ngắn gọn, rõ ràng.
+    Không dùng dấu ngoặc kép ("") hoặc dấu ba chấm (...).
+    Trình bày theo cách dễ đọc, súc tích, không rườm rà.
+
     Bạn là chuyên gia kiểm định xây dựng. Hãy kiểm tra nội dung thiết kế sau và PHẢI đưa ra kết luận theo định dạng trong dấu "..." như ví dụ ở dưới, (nếu có số liệu thì ghi vào) không được ghi thêm:
 
     Nội dung thiết kế: "{result_text}"
 
     ĐÂY LÀ VÍ DỤ VỀ CÁCH VIẾT KẾT LUẬN:
 
-    Nếu nội dung thiết kế có ghi số liệu về độ dốc của các đường và không được vượt quá 1:8,3 thì kết luận nguyên văn là "Đạt vì độ dốc của các đường (số liệu liệt kê như trong nội dung thiết kế nếu có) không vượt quá 1:8,3." Nếu độ dốc vượt quá 1:8,3 thì kết luận nguyên văn là "Không đạt vì độ dốc của các đường (số liệu liệt kê như trong nội dung thiết kế nếu có) vượt quá 1:8,3."
+    Nếu nội dung thiết kế có ghi số liệu về độ dốc của các đường và không được vượt quá 6,87 độ thì kết luận nguyên văn là: Đạt vì độ dốc của các đường (số liệu liệt kê như trong nội dung thiết kế nếu có) không vượt quá 6,87 độ. Nếu độ dốc vượt quá 6,87 độ thì kết luận nguyên văn là: Không đạt vì độ dốc của các đường (số liệu liệt kê như trong nội dung thiết kế nếu có) vượt quá 6,87 độ.
     """
     url = f"https://generativelanguage.googleapis.com/v1beta/{model}:generateContent?key={api_key}"
     headers = {"Content-Type": "application/json"}
@@ -210,15 +226,19 @@ def llm_compare_func_gemini_task5(result_text, api_key, model="models/gemini-1.5
     
 def llm_compare_func_gemini_task6(result_text, api_key, model="models/gemini-1.5-pro"): 
     prompt = f"""
+    Hãy trả lời ngắn gọn, rõ ràng.
+    Không dùng dấu ngoặc kép ("") hoặc dấu ba chấm (...).
+    Trình bày theo cách dễ đọc, súc tích, không rườm rà.
+
     Bạn là chuyên gia kiểm định xây dựng. Hãy kiểm tra nội dung thiết kế sau và PHẢI đưa ra kết luận theo định dạng trong dấu "..." như ví dụ ở dưới, (nếu có số liệu thì ghi vào) không được ghi thêm:
 
     Nội dung thiết kế: "{result_text}"
 
     ĐÂY LÀ VÍ DỤ VỀ CÁCH VIẾT KẾT LUẬN:
 
-    Nếu nội dung thiết kế thể hiện kiểu như: "Không có đoạn tránh xe nào được phát hiện." thì kết luận nguyên văn là "Chưa thể kết luận."
-    Nếu nội dung thiết kế thể hiện kiểu như: "Đoạn tránh xe hợp lệ ... | Chiều dài: ... | Chiều rộng: ..." hoặc "Không có đoạn tránh xe không hợp lệ nào." thì kết luận nguyên văn là "Đạt."
-    Nếu nội dung thiết kế thể hiện kiểu như: "Đoạn tránh xe không hợp lệ ... | Chiều dài: ... | Chiều rộng: ..." hoặc "Không có đạon tránh xe hợp lệ nào." thì kết luận nguyên văn là "Không đạt."
+    Nếu nội dung thiết kế thể hiện kiểu như: Không có đoạn tránh xe nào được phát hiện. thì kết luận nguyên văn là: Chưa thể kết luận.
+    Nếu nội dung thiết kế thể hiện kiểu như: Đoạn tránh xe hợp lệ ... | Chiều dài: ... | Chiều rộng: ... hoặc Không có đoạn tránh xe không hợp lệ nào. thì kết luận nguyên văn là: Đạt.
+    Nếu nội dung thiết kế thể hiện kiểu như: Đoạn tránh xe không hợp lệ ... | Chiều dài: ... | Chiều rộng: ... hoặc Không có đạon tránh xe hợp lệ nào. thì kết luận nguyên văn là: Không đạt.
 
     """
     url = f"https://generativelanguage.googleapis.com/v1beta/{model}:generateContent?key={api_key}"
@@ -232,15 +252,19 @@ def llm_compare_func_gemini_task6(result_text, api_key, model="models/gemini-1.5
 
 def llm_compare_func_gemini_task9(result_text, api_key, model="models/gemini-1.5-pro"): 
     prompt = f"""
+    Hãy trả lời ngắn gọn, rõ ràng.
+    hông dùng dấu ngoặc kép ("") hoặc dấu ba chấm (...).
+    Trình bày theo cách dễ đọc, súc tích, không rườm rà.
+
     Bạn là chuyên gia kiểm định xây dựng. Hãy kiểm tra nội dung thiết kế sau và PHẢI đưa ra kết luận theo định dạng trong dấu "..." như ví dụ ở dưới, (nếu có số liệu thì ghi vào) không được ghi thêm:
 
     Nội dung thiết kế: "{result_text}"
 
     ĐÂY LÀ VÍ DỤ VỀ CÁCH VIẾT KẾT LUẬN:
 
-    Nếu nội dung thiết kế thể hiện có trụ cứu hỏa thì kết luận nguyên văn là "Đạt vì có trụ cứu hỏa và khoảng cách giữa các trụ cứu hỏa là (ghi số liệu cụ thể như trong nội dung thiết kế)." 
-    Nếu không đủ trụ cứu hỏa để tính khoảng cách thì kết luận nguyên văn là "Có bố trí một trụ cứu hỏa."
-    Còn nếu không có trụ cứu hỏa nào thì kết luận nguyên văn là "Không đạt vì không có trụ cứu hỏa."
+    Nếu nội dung thiết kế thể hiện có trụ cứu hỏa thì kết luận nguyên văn là: Đạt vì có trụ cứu hỏa và khoảng cách giữa các trụ cứu hỏa là (ghi số liệu cụ thể như trong nội dung thiết kế).
+    Nếu không đủ trụ cứu hỏa để tính khoảng cách thì kết luận nguyên văn là Có bố trí một trụ cứu hỏa.
+    Còn nếu không có trụ cứu hỏa nào thì kết luận nguyên văn là: Không đạt vì không có trụ cứu hỏa.
     """
     url = f"https://generativelanguage.googleapis.com/v1beta/{model}:generateContent?key={api_key}"
     headers = {"Content-Type": "application/json"}
@@ -253,13 +277,18 @@ def llm_compare_func_gemini_task9(result_text, api_key, model="models/gemini-1.5
 
 def llm_compare_func_gemini_task11(result_text, api_key, model="models/gemini-1.5-pro"): 
     prompt = f"""
+    Hãy trả lời ngắn gọn, rõ ràng.
+    Không dùng dấu ngoặc kép ("") hoặc dấu ba chấm (...).
+    Trình bày theo cách dễ đọc, súc tích, không rườm rà.
+
     Bạn là chuyên gia kiểm định xây dựng. Hãy kiểm tra nội dung thiết kế sau và PHẢI đưa ra kết luận theo định dạng trong dấu "..." như ví dụ ở dưới, (nếu có số liệu thì ghi vào) không được ghi thêm:
 
     Nội dung thiết kế: "{result_text}"
 
-    ĐÂY LÀ VÍ DỤ VỀ CÁCH VIẾT KẾT LUẬN:
+    TUYỆT ĐỐI KHÔNG ĐƯỢC SO SÁNH CÁC LƯU LƯỢNG TRONG NỘI DUNG THIẾT KẾ, VIẾT KẾT LUẬN THEO ĐỊNH DẠNG Ở DƯỚI.
+    ĐÂY LÀ ĐỊNH DẠNG VỀ CÁCH VIẾT KẾT LUẬN:
 
-    Nếu nội dung thiết kế có ghi số liệu về lưu lượng nước chữa cháy và các loại lưu lượng nước khác (nước dùng sinh hoạt...) thì kết luận nguyên văn là "Đạt vì lưu lượng nước chữa cháy đã được đảm bảo ngay cả khi xét đến lưu lượng dùng nước khác."
+    Nếu nội dung thiết kế có ghi số liệu về lưu lượng nước chữa cháy và các loại lưu lượng nước khác (nước dùng sinh hoạt...) thì kết luận nguyên văn là: Đạt vì lưu lượng nước chữa cháy đã được đảm bảo ngay cả khi xét đến lưu lượng dùng nước khác.
     """
     url = f"https://generativelanguage.googleapis.com/v1beta/{model}:generateContent?key={api_key}"
     headers = {"Content-Type": "application/json"}
@@ -273,11 +302,16 @@ def llm_compare_func_gemini_task11(result_text, api_key, model="models/gemini-1.
 def llm_compare_func_gemini_task12(result_text, api_key, model="models/gemini-1.5-pro"): 
 
     prompt = f"""
+    Hãy trả lời ngắn gọn, rõ ràng.
+    Không dùng dấu ngoặc kép ("") hoặc dấu ba chấm (...).
+    Trình bày theo cách dễ đọc, súc tích, không rườm rà.
+
     Bạn hãy dựa vào diện tích của tòa nhà trong nội dung thiết kế để tính số lượng đám cháy rồi ghi kết luận.
     Nội dung thiết kế: "{result_text}".
     Dữ liệu về dân số: "{rag_for_task12}".
-    Tính số lượng đám cháy tính toán theo quy chuẩn sau: Nếu diện tích dưới 1500000 m2 thì tính là 1 đám cháy. Sau đó xét tiếp đến dân số, nếu dân số dưới 10000 người thì tính 1 đám cháy, còn nếu dân số từ 10000 đến 25000 người thì tính là 2 đám cháy. Cuối cùng tổng số đám cháy sẽ là tổng của số đám cháy tính theo diện tích và số đám cháy tính theo dân số. Nếu không có dữ liệu về dân số thì kết luận nguyên văn là "Không có dữ liệu về dân số nên không thể tính số lượng đám cháy theo dân số." Nếu không có diện tích thì kết luận nguyên văn là "Không có diện tích nên không thể tính số lượng đám cháy theo diện tích."
-    Sau đó kết luận nguyên văn là: "Số lượng đám cháy tính toán là: ..."
+    Tính số lượng đám cháy tính toán theo quy chuẩn sau: Nếu diện tích dưới 1500000 m2 thì tính là 1 đám cháy. Sau đó xét tiếp đến dân số, nếu dân số dưới 10000 người thì tính 1 đám cháy, còn nếu dân số từ 10000 đến 25000 người thì tính là 2 đám cháy. Cuối cùng tổng số đám cháy sẽ là tổng của số đám cháy tính theo diện tích và số đám cháy tính theo dân số. Nếu không có dữ liệu về dân số thì kết luận nguyên văn là: Không có dữ liệu về dân số nên không thể tính số lượng đám cháy theo dân số. Nếu không có diện tích thì kết luận nguyên văn là: Không có diện tích nên không thể tính số lượng đám cháy theo diện tích.
+    Sau đó kết luận nguyên văn là: Số lượng đám cháy tính toán là: ...
+    Lưu ý là không nêu các bước tính và giải thích vào kết luận, chỉ ghi kết luận ngắn gọn theo định dạng trên.
     """
     url = f"https://generativelanguage.googleapis.com/v1beta/{model}:generateContent?key={api_key}"
     headers = {"Content-Type": "application/json"}
@@ -290,13 +324,17 @@ def llm_compare_func_gemini_task12(result_text, api_key, model="models/gemini-1.
 
 def llm_compare_func_gemini_task13(result_text, api_key, model="models/gemini-1.5-pro"): 
     prompt = f"""
+    Hãy trả lời ngắn gọn, rõ ràng.
+    Không dùng dấu ngoặc kép ("") hoặc dấu ba chấm (...).
+    Trình bày theo cách dễ đọc, súc tích, không rườm rà.
+    
     Bạn là chuyên gia kiểm định xây dựng. Hãy kiểm tra nội dung thiết kế sau và PHẢI đưa ra kết luận theo định dạng trong dấu "..." như ví dụ ở dưới, (nếu có số liệu thì ghi vào) không được ghi thêm:
 
     Nội dung thiết kế: "{result_text}"
 
     ĐÂY LÀ VÍ DỤ VỀ CÁCH VIẾT KẾT LUẬN:
 
-    Nếu nội dung thiết kế thể hiện là có bố trí đường dây, có bố trí tủ điện thì kết luận nguyên văn là "Đạt vì có bố trí đường dây, tủ điện." Nếu không có bố trí đường dây, tủ điện thì kết luận nguyên văn là "Không đạt vì không có bố trí đường dây, tủ điện."
+    Nếu nội dung thiết kế thể hiện là có bố trí đường dây, có bố trí tủ điện thì kết luận nguyên văn là: Đạt vì có bố trí đường dây, tủ điện. Nếu không có bố trí đường dây, tủ điện thì kết luận nguyên văn là: Không đạt vì không có bố trí đường dây, tủ điện.
     """
     url = f"https://generativelanguage.googleapis.com/v1beta/{model}:generateContent?key={api_key}"
     headers = {"Content-Type": "application/json"}

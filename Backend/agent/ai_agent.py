@@ -40,9 +40,13 @@ def create_agent():
     Chọn đúng 1 từ khoá sau để trả lời:
     - task1: Nếu yêu cầu liên quan đến khoảng cách phòng cháy giữa các tòa nhà.
     - task2: Nếu yêu cầu liên quan đến kiểm tra chiều rộng đường nội bộ hoặc bãi đỗ xe chữa cháy.
+<<<<<<< HEAD
     - task3: Nếu yêu cầu liên quan đến kiểm tra tải trọng nền đường cho xe, bãi đỗ trong file thuyết minh PDF.
     - task4: Nếu yêu cầu lien quan đến khoảng cách từ mép đường tới tường nhà hoặc công trình.
     - task5: Nếu yêu cầu liên quan đến kiểm tra có thể hiện đoạn dốc hay không.
+=======
+    - task5: Nếu yêu cầu liên quan đến kiểm tra có thể hiện đoạn dốc hay không. 
+>>>>>>> 12b9bf1f42dfabaed6476ad55559541f2254a92a
     - task6: Nếu yêu cầu liên quan đến đoạn tránh xe.
     - task9: Nếu yêu cầu liên quan đến nhận diện trụ cứu hỏa và khoảng cách giữa các trụ cứu hỏa.
     - task11: Nếu yêu cầu liên quan đến kiểm tra yêu cầu về lưu lượng nước trong file thuyết minh PDF.

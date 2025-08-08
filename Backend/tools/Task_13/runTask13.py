@@ -17,10 +17,8 @@ logging.getLogger("ezdxf.addons.drawing.frontend").setLevel(logging.ERROR)
 logging.getLogger("ezdxf.addons.drawing").setLevel(logging.ERROR)
 logging.getLogger("ezdxf").setLevel(logging.ERROR)
 
+from utils.global_backend import layers_TTLL_task13, layers_to_draw_task13
 API_KEY = AGENT_API_KEY
-
-layers_to_check = ['TT-BUUDIEN', 'Tuyen chinh TTLL']
-prefix_layer_khungten = 'xref_bdh_khungtena2$0$XREF-KHUNG A2-Songhong$0$'
 
 def detect_duong_day(image):
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -52,7 +50,7 @@ def TTLL_main(input_dxf_dir: str, process_folder = None, output_folder = None, o
     process_folder += f"/{output_name}"
     
     for layer in doc.layers:
-        if layer.dxf.name.startswith(prefix_layer_khungten) or layer.dxf.name in layers_to_check:
+        if layer.dxf.name in layers_TTLL_task13 or layer.dxf.name.endswith(tuple(layers_to_draw_task13)):
             layer.on()
         else:
             layer.off()

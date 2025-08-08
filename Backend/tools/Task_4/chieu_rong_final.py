@@ -4,6 +4,7 @@ import numpy as np
 from ezdxf.addons.drawing import matplotlib
 import os
 import cv2
+<<<<<<< HEAD
 
 layer_dat_nha_o='QH_DAT_NO_Nhaochungcu'
 layer_ranh_gioi_lap_quy_hoach=['QH_Ranh giới lập quy hoạch',
@@ -13,6 +14,10 @@ layer_to_extract=['QH_DAT_NO_Nhaochungcu',
                   'QHDH_DAT_CTHTKT_DuongGT_CH',
                   'QH_DAT_Cayxanhhanche'
 ]
+=======
+from utils.global_backend import layer_to_extract_task4, layer_dat_nha_o_task4,layers_rg_qh
+
+>>>>>>> 12b9bf1f42dfabaed6476ad55559541f2254a92a
 # 3========================================D 
 def decode_dimtype(dimtype_value):
     """
@@ -132,10 +137,9 @@ def extract_dimensions_from_layer(dxf_file_path):
                     dim_style = doc.dimstyles.get(entity.dxf.dimstyle)
                     if dim_style and hasattr(dim_style.dxf, 'dimpost') and dim_style.dxf.dimpost == 'm':
                         dim_style.dxf.dimpost = "<>m"
-            elif entity.dxftype()=='LWPOLYLINE' and entity.dxf.layer.endswith(layer_dat_nha_o):
+            elif entity.dxftype()=='LWPOLYLINE' and entity.dxf.layer.endswith(layer_dat_nha_o_task4):
                     duong_nha_o.append(entity)
-            elif entity.dxftype()=='LWPOLYLINE' and (entity.dxf.layer.endswith(layer_ranh_gioi_lap_quy_hoach[0]) 
-                                                     or entity.dxf.layer.endswith(layer_ranh_gioi_lap_quy_hoach[1])):
+            elif entity.dxftype()=='LWPOLYLINE' and (entity.dxf.layer.endswith(tuple(layers_rg_qh))):
                 duong_rg_lapquyhoach.append(entity)
         dims_inside_ranh_gioi_lap_quy_hoach = get_dim_inside_ranh_dat(dims,duong_rg_lapquyhoach)
         for dim in dims_inside_ranh_gioi_lap_quy_hoach:
@@ -165,8 +169,8 @@ def extract_dimensions_from_layer(dxf_file_path):
                     if not dimension_classified:
                         extracted_dimensions['duong_nb'].append(extract_dimension_properties(dim))
                         duong_nb += 1
-            if dim.dxf.layer not in layer_to_extract:
-                layer_to_extract.append(dim.dxf.layer)  # Add layer to extract if not already present
+            if dim.dxf.layer not in layer_to_extract_task4:
+                layer_to_extract_task4.append(dim.dxf.layer)  # Add layer to extract if not already present
         print(f"Total dimension entities found: {len(dims)}")
         print(f"Tong duong nha o: {len(duong_nha_o)}")
         print(f"Tong mep duong dimensions found: {mep_duong}")    
@@ -412,8 +416,13 @@ def main(dxf_file_path,output_folder):
         annotate_dimensions(mep_duong, msp, index=len(do_rong_duong_nb)+1)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
         # Save the new DXF with bounding boxes
     for layer in doc.layers:
+<<<<<<< HEAD
         if (layer.dxf.name.endswith(tuple(layer_to_extract)) 
             or layer.dxf.name == layer_dat_nha_o
+=======
+        if (layer.dxf.name.endswith(tuple(layer_to_extract_task4)) 
+            or layer.dxf.name == layer_dat_nha_o_task4
+>>>>>>> 12b9bf1f42dfabaed6476ad55559541f2254a92a
             or layer.dxf.name=='bounding_box'):
             layer.on()
         else:              
