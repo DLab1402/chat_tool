@@ -3,8 +3,7 @@ from ezdxf.entities import Dimension
 import numpy as np
 from ezdxf.addons.drawing import matplotlib
 import os
-import cv2
-from utils.global_backend import layer_to_extract_task4, layer_dat_nha_o_task4,layers_rg_qh
+from setting.global_var import layer_to_extract_task4, layer_dat_nha_o_task4,layers_rg_qh
 
 # 3========================================D 
 def decode_dimtype(dimtype_value):

@@ -4,7 +4,6 @@ import cv2
 import numpy as np
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
 from utils.file_classifier import classify_input_files
 from utils.decorator import dict_to_chat_html_with_cv2_image
 from tools.Task_4.chieu_rong_final import main

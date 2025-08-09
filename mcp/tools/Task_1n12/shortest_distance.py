@@ -5,7 +5,7 @@ import pytesseract
 from pytesseract import Output
 import ezdxf
 from ezdxf.addons.drawing import matplotlib
-from utils.global_backend import layers_to_extract_task1, layers_block_task1, layers_rg_qh
+from setting.global_var import layers_to_extract_task1, layers_block_task1, layers_rg_qh
 target_entity_types=['TEXT','MTEXT','LINE', 'POLYLINE', 'LWPOLYLINE']
 
 def load_image(image_path):

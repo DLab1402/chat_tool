@@ -8,7 +8,7 @@ from fastapi import FastAPI, UploadFile, File, Form
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from utils.output_collector import output_collector, llm_compare_func_gemini
-from utils.global_backend import AGENT_API_KEY
+from setting.global_var import AGENT_API_KEY
 from tools.Task_1n12.runTask1n12 import runTask1n12
 from tools.Task_3n11.runTask3 import runTask3
 from tools.Task_3n11.runTask11 import runTask11

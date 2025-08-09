@@ -21,7 +21,6 @@ pytesseract.pytesseract.tesseract_cmd = os.path.join(ROOT_DIR, "OCR","tesseract.
 with open(os.path.join(CURRENT_DIR, "setting.json"), "r") as file:
     # 2. Load its content into a Python object
     para = json.load(file)
-    print(para)
 
 #IPs and Ports
 APP_IP = para["para"]["app_ip"]

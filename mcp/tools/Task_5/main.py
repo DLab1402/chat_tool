@@ -2,7 +2,6 @@ import ezdxf
 import math
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-import matplotlib.transforms as transforms
 
 def detect_slope(dxf_file, layers_to_check, output_image_path):
     # Đọc file DXF

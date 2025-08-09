@@ -14,7 +14,7 @@
         "layers_block_task1":["DAT_NO_NhaochungCu","QH_NO_ChungCu_Block"],
         "layers_TTLL_task13": ["HTKT_CD_Tram", "HTKT_CD_Tuyen"],
         "layers_to_draw_task13":["DAT_NO_NhaochungCu","DAT_CTHTKT_DuongGT","BV_Rg_lapquyhoach"],
-        "'layer_dat_nha_o_task4":"DAT_NO_NhaochungCu",
+        "layer_dat_nha_o_task4":"DAT_NO_NhaochungCu",
         "layer_to_extract_task4":["DAT_NO_NhaochungCu","DAT_CTHTKT_DuongGT","BV_Rg_lapquyhoach"],
         "layers_to_check_2":["QH_Xref_TongThe$0$DAT_CTHTKT_DuongGT", "QH_Xref_TongThe$0$ QH_HTKT_HatchGTNB","QH_Xref_TongThe$0$A-GENM", "San", "BBOX"],
         "layers_rg_qh_2":["QH_Xref_TongThe$0$BV_Rg_lapquyhoach"],
@@ -26,7 +26,7 @@
         "layer_cuuhoa":"HTKT_CC_Tuyen",
         "layer_GTNB_9":"QH_Xref_TongThe$0$DAT_CTHTKT_DuongGT"
     },
-"user":
+"users":
     {
         "admin":"1234",
         "user1":"5678"

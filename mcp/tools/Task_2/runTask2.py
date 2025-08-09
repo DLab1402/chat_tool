@@ -2,15 +2,14 @@ import os
 import sys
 import glob
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
-
 from utils.file_classifier import classify_input_files
 from utils.decorator import dict_to_chat_html_with_cv2_image
 from tools.Task_2.Task2_1 import process_image_pipeline
 from tools.Task_2.Task2_2 import detect_parking_areas
 from tools.Task_2.scale_ratio import convert_dxf_to_png_scale_ratio
 from tools.Task_2.Task2_2new import detect 
-from utils.global_backend import layers_to_check_2, layers_rg_qh_2, layer_GTNB_2
+from setting.global_var import layers_to_check_2, layers_rg_qh_2, layer_GTNB_2
+
 def runTask2(session_dir, single=True):
     input_folder = os.path.join(session_dir, "input")
     output_folder = os.path.join(session_dir, "output")

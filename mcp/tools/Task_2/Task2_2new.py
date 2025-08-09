@@ -1,7 +1,5 @@
 import cv2
 import numpy as np
-import os
-import matplotlib.pyplot as plt
 
 def find_green_external_contours(image_path, ratio, show_result=True):
     image = cv2.imread(image_path)

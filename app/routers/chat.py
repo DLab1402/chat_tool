@@ -7,7 +7,6 @@ import shutil
 import sys
 import os
 import json
-
 import asyncio
 import os
 import shutil
@@ -17,11 +16,7 @@ from pydantic import BaseModel
 import time
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from bcons.app.utils.global_app import session_folders, UPLOAD_DIR, AGENT_API_KEY, MCP_SERVER_URL, GEMINI_MODEL
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
-from bcons.app.utils.global_app import TEMP_DIR, UPLOAD_DIR
+from setting.global_var import session_folders, UPLOAD_DIR, AGENT_API_KEY, MCP_URL, GEMINI_MODEL, TEMP_DIR, UPLOAD_DIR
 
 router = APIRouter()
 
@@ -100,7 +95,7 @@ async def process_file(session_id: str,message: str):
         if tool in ["task1", "task2", "task3", "task4", "task5", "task6", "task9", "task11", "task12", "task13", "all"]:
             if not session_dir:
                 return {"response": "Thiếu session_dir"}
-            response = requests.post(f"{MCP_SERVER_URL}/tools/run_{tool}", data={"session_dir": session_dir})
+            response = requests.post(f"{MCP_URL}/tools/run_{tool}", data={"session_dir": session_dir})
             if response.status_code == 200:
                 return {"response": response.json()["result"]}
             return {"response": f"Không thể xử lý yêu cầu {tool}"}
@@ -206,16 +201,13 @@ async def logout(request: Request):
 @router.get("/download")
 async def download(request:Request):
     session_id = request.session.get("session_id")
-    file_path = os.path.join(UPLOAD_DIR, session_id, "output", "Ket_qua_doi_chieu.doc")
-    print(session_id)
-    print("File path:", file_path)
+    file_path = os.path.join(UPLOAD_DIR, f"session_{session_id}", "output", "Ket_qua_doi_chieu.doc")
 
-    if os.path.exists(r"D:\bcons_app\bcons_app\Backend\utils\Bảng đối chiếu quy hoạch.docx"):
+    if os.path.exists(file_path):
         print("✅ File exists, returning it.")
         return FileResponse(
-            path=r"D:\bcons_app\bcons_app\Backend\utils\Bảng đối chiếu quy hoạch.docx",
+            path=file_path,
             filename="Ket_qua_doi_chieu.doc",
             media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
         )
-    print("❌ File not found")
     return {"error": "File not found"}

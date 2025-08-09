@@ -8,7 +8,7 @@ import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from utils.global_backend import AGENT_API_KEY
+from setting.global_var import AGENT_API_KEY
 from utils.file_classifier import classify_input_files
 from utils.decorator import dict_to_chat_html_with_cv2_image
 
@@ -17,7 +17,7 @@ logging.getLogger("ezdxf.addons.drawing.frontend").setLevel(logging.ERROR)
 logging.getLogger("ezdxf.addons.drawing").setLevel(logging.ERROR)
 logging.getLogger("ezdxf").setLevel(logging.ERROR)
 
-from utils.global_backend import layers_TTLL_task13, layers_to_draw_task13
+from setting.global_var import layers_TTLL_task13, layers_to_draw_task13
 API_KEY = AGENT_API_KEY
 
 def detect_duong_day(image):

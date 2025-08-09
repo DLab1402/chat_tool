@@ -11,8 +11,8 @@ from fastapi.templating import Jinja2Templates
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from config import Settings
-from routers import login, chat, visual
-from Frontend.utils.global_frontend import STATIC_DIR,TEMP_DIR
+from routers import login, chat
+from setting.global_var import STATIC_DIR,TEMP_DIR
 
 def create_app():
     app = FastAPI()
@@ -26,6 +26,5 @@ def create_app():
     # Routers
     app.include_router(login.router)
     app.include_router(chat.router)
-    app.include_router(visual.router)
     
     return app

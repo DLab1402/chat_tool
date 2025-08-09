@@ -2,7 +2,7 @@ import ezdxf
 import math
 import matplotlib.pyplot as plt
 from tools.Task_9.dxf_to_png import convert_dxf_to_png
-from utils.global_backend import layer_cuuhoa, layer_GTNB_9
+from setting.global_var import layer_cuuhoa, layer_GTNB_9
 layer_to_check = [layer_cuuhoa, layer_GTNB_9]
 
 def draw_trucuuhoa_distances(input_filename, output_filename1, output_filename2, layer_cuuhoa=layer_cuuhoa, layer_to_check=layer_to_check):

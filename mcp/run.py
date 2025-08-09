@@ -4,8 +4,7 @@ import sys
 import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
-from utils.global_backend import MCP_IP, MCP_PORT
+from setting.global_var import MCP_IP, MCP_PORT
 
 mcp = create_mcp()
 

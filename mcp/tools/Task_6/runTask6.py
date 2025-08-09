@@ -16,7 +16,7 @@ from ultralytics import YOLO
 from shapely.geometry import LineString, Polygon
 from utils.file_classifier import classify_input_files
 from utils.decorator import dict_to_chat_html_with_cv2_image
-from utils.global_backend import layers_to_check_6, layer_GTNB_6, layers_rg_qh_6
+from setting.global_var import layers_to_check_6, layer_GTNB_6, layers_rg_qh_6
 def runTask6(session_dir, single=True):
 
     input_folder = os.path.join(session_dir, "input")

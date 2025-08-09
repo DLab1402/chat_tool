@@ -10,7 +10,7 @@ import json
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from utils.global_backend import TEMPLATE_PATH, AGENT_API_KEY, BACKEND_IP,BACKTEND_PORT, FORNTEND_IP, FRONTEND_PORT
+from setting.global_var import TEMPLATE_PATH, AGENT_API_KEY, APP_URL
 from utils.output_collector import output_collector, llm_compare_func_gemini_task1, llm_compare_func_gemini_task2, llm_compare_func_gemini_task3, llm_compare_func_gemini_task4, llm_compare_func_gemini_task5, llm_compare_func_gemini_task6, llm_compare_func_gemini_task9, llm_compare_func_gemini_task11, llm_compare_func_gemini_task12, llm_compare_func_gemini_task13
 
 from tools.Task_1n12.runTask1n12 import runTask1n12
@@ -166,4 +166,4 @@ def runallTask(session_dir):
         task="task13"
     )
 
-    return "<a href='http://"+FORNTEND_IP+":"+str(FRONTEND_PORT)+"/download' download>Click: Kết quả đối chiếu.</a>"
+    return f"<a href={APP_URL}/download' download>Click: Kết quả đối chiếu.</a>"

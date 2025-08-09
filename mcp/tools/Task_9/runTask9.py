@@ -6,6 +6,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from utils.file_classifier import classify_input_files
 from utils.decorator import dict_to_chat_html_with_cv2_image
 from tools.Task_9.converter import draw_trucuuhoa_distances
+
 def runTask9(session_dir, single=True):
     input_folder = os.path.join(session_dir, "input")
     output_folder = os.path.join(session_dir, "output")

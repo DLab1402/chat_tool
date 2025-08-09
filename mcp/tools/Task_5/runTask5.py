@@ -2,9 +2,8 @@ from utils.file_classifier import classify_input_files
 from utils.decorator import dict_to_chat_html_with_cv2_image
 from tools.Task_5.main import detect_slope
 import os
-import glob
 import cv2
-from utils.global_backend import layers_to_check_5
+from setting.global_var import layers_to_check_5
 def runTask5(session_dir, single = True):
 
     input_folder = os.path.join(session_dir, "input")

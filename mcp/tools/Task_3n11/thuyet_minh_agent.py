@@ -8,7 +8,7 @@ from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunct
 import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from utils.global_backend import AGENT_API_KEY
+from setting.global_var import AGENT_API_KEY
 
 PDF_PATH = "input.pdf"  # Giá trị này sẽ được thay bằng file tạm khi gọi từ MCP server
 

@@ -2,9 +2,7 @@ import os
 import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
 from utils.file_classifier import classify_input_files
-from utils.gemini_deco import gemini_to_chatbot_html
 from tools.Task_3n11.thuyet_minh_agent import answer_pdf_tai_trong
 
 def runTask3(session_dir):

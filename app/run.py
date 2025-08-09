@@ -1,15 +1,14 @@
-from main import create_app
 import uvicorn
 import sys
 import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
-from Frontend.utils.global_frontend import FORNTEND_IP,FRONTEND_PORT
+from setting.global_var import APP_IP, APP_PORT
+from main import create_app
 
 app = create_app()
 
 if __name__ == "__main__":
-    uvicorn.run("run:app", host=FORNTEND_IP, 
-                port=FRONTEND_PORT,
+    uvicorn.run("run:app", host=APP_IP, 
+                port=APP_PORT,
                 reload=True)
