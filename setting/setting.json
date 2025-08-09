@@ -1,0 +1,36 @@
+{"para":
+    {
+        "key":"AIzaSyBLH04Gkgnr_vXvZtuGowwhNedpE_--xxs",
+        "model":"models/gemini-1.5-pro-latest",
+        "app_ip":"127.0.0.1",
+        "app_port":8080,
+        "mcp_ip":"127.0.0.1",
+        "mcp_port":8081
+    },
+"layers":
+    {
+        "layers_rg_qh": "BV_Rg_lapquyhoach",
+        "layers_to_extract_task1":["QH_KH_BLOCK","BBOX"],
+        "layers_block_task1":["DAT_NO_NhaochungCu","QH_NO_ChungCu_Block"],
+        "layers_TTLL_task13": ["HTKT_CD_Tram", "HTKT_CD_Tuyen"],
+        "layers_to_draw_task13":["DAT_NO_NhaochungCu","DAT_CTHTKT_DuongGT","BV_Rg_lapquyhoach"],
+        "'layer_dat_nha_o_task4":"DAT_NO_NhaochungCu",
+        "layer_to_extract_task4":["DAT_NO_NhaochungCu","DAT_CTHTKT_DuongGT","BV_Rg_lapquyhoach"],
+        "layers_to_check_2":["QH_Xref_TongThe$0$DAT_CTHTKT_DuongGT", "QH_Xref_TongThe$0$ QH_HTKT_HatchGTNB","QH_Xref_TongThe$0$A-GENM", "San", "BBOX"],
+        "layers_rg_qh_2":["QH_Xref_TongThe$0$BV_Rg_lapquyhoach"],
+        "layer_GTNB_2":"QH_Xref_TongThe$0$DAT_CTHTKT_DuongGT",
+        "layers_to_check_5":["QH_Xref_TongThe$0$DAT_CTHTKT_DuongGT","QH_Xref_TongThe$0$ QH_HTKT_HatchGTNB","QH_Xref_TongThe$0$00-HACTH","QH_KH_CaoDoThietKe"], 
+        "layers_to_check_6":["QH_Xref_TongThe$0$DAT_CTHTKT_DuongGT","QH_Xref_TongThe$0$ QH_HTKT_HatchGTNB","BBOX"], 
+        "layers_rg_qh_6":["QH_Xref_TongThe$0$BV_Rg_lapquyhoach"],
+        "layer_GTNB_6":"QH_Xref_TongThe$0$DAT_CTHTKT_DuongGT",
+        "layer_cuuhoa":"HTKT_CC_Tuyen",
+        "layer_GTNB_9":"QH_Xref_TongThe$0$DAT_CTHTKT_DuongGT"
+    },
+"user":
+    {
+        "admin":"1234",
+        "user1":"5678"
+    },
+"expire": 3600,
+"trigger": 60
+}
