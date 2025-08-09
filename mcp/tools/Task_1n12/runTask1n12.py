@@ -17,10 +17,12 @@ def runTask1n12(session_dir, single = True):
         return "Không tìm thấy file DXF cho task1"
     dxf_file = dxf_files[0]
     
-    try:
-        result = process_single_dxf(dxf_file, image_folder=process_folder, result_folder=output_folder)
-    except Exception as e:
-        return f"Error: {e}"
+    # try:
+    #     result = process_single_dxf(dxf_file, image_folder=process_folder, result_folder=output_folder)
+    # except Exception as e:
+    #     return f"Error: {e}"
+
+    result = process_single_dxf(dxf_file, image_folder=process_folder, result_folder=output_folder)
 
     if single:
         return dict_to_chat_html_with_cv2_image(result)

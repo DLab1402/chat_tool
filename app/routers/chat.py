@@ -166,12 +166,6 @@ async def upload_folder(request: Request, files: List[UploadFile] = File(...)):
     try:
         form_files = []
         for file in files:
-            content = await file.read()
-            form_files.append(
-                ('files', (file.filename, content, file.content_type))
-            )
-
-        for file in files:
             filename = file.filename
             clean_name = os.path.basename(filename)
             ext = file.filename.split(".")[-1].lower()
@@ -184,6 +178,7 @@ async def upload_folder(request: Request, files: List[UploadFile] = File(...)):
                     print(clean_name)
 
                 saved_files.append(clean_name)
+            
 
     except Exception as e:
         result = f"Error contacting agent: {e}"
