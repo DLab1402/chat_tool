@@ -5,6 +5,7 @@ import os
 import glob
 import cv2
 from utils.global_backend import layers_to_check_5
+
 def runTask5(session_dir, single = True):
 
     input_folder = os.path.join(session_dir, "input")

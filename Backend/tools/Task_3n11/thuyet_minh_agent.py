@@ -127,7 +127,7 @@ def answer_pdf_luu_luong(pdf_file: bytes):
     """
     for title in section_titles:
         prompt += f"[{title}]\n{sections.get(title, '')}\n\n"
-    prompt += "Kiểm tra xem có đề cập đến lưu lượng nước (nhu cầu nước sinh hoạt, nhu cầu nước chữa cháy, tổng nhu cầu nước/ngày) hay không.\nNếu có thông tin về lưu lượng nước hãy liệt kê số liệu cụ thể. Nếu không có thông tin thì cảnh báo không có."
+    prompt += "Kiểm tra xem có đề cập đến lưu lượng nước hay không. Nếu có bảng dự báo nhu cầu dùng nước thì liệt kê số liệu của những đề mục sau 'Tổng nhu cầu nước sinh hoạt (Kmax = 1.2)', 'Nhu cầu nước chữa cháy', 'Tổng nhu cầu nước/ngày'. Lưu ý chỉ lấy số liệu ở cột 'Lưu lượng' và phải gióng đúng hàng (đề mục) đúng cột (lưu lượng) .\nNếu có thông tin về lưu lượng nước hãy liệt kê số liệu cụ thể. Nếu không có thông tin thì cảnh báo không có."
     prompt += "Trình bày câu trả lời rõ ràng, không được thêm các dấu * hay -, chỉ dùng dấu . và dấu ,"
     result = call_gemini(prompt)
     return result

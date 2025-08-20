@@ -166,4 +166,5 @@ def runallTask(session_dir):
         task="task13"
     )
 
-    return "<a href='http://"+FORNTEND_IP+":"+str(FRONTEND_PORT)+"/download' download>Click: Kết quả đối chiếu.</a>"
+    # return "<a href='http://"+FORNTEND_IP+":"+str(FRONTEND_PORT)+"/download' download>Click: Kết quả đối chiếu.</a>"
+    return "<a href='http://bcons-uid-2025.duckdns.org:5000/download' download>Click: Kết quả đối chiếu.</a>"

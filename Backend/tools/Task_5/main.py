@@ -62,7 +62,7 @@ def detect_slope(dxf_file, layers_to_check, output_image_path):
     # Vẽ các entity thuộc layer cho phép
     for e in msp:
         layer_name = e.dxf.layer
-        if layer_name in layers_to_check:
+        if any(layer_name.endswith(suffix) for suffix in layers_to_check):
             if e.dxftype() == 'LINE':
                 x_values = [e.dxf.start[0], e.dxf.end[0]]
                 y_values = [e.dxf.start[1], e.dxf.end[1]]
@@ -146,9 +146,15 @@ def detect_slope(dxf_file, layers_to_check, output_image_path):
     ax.axis('off')
 
     # Lưu hình ảnh
-    plt.savefig(output_image_path, dpi=300, bbox_inches='tight')
-    plt.close()
+    print("Saving!")
+    try:
+        plt.savefig(output_image_path, dpi=300, bbox_inches='tight')
+        plt.close()
 
-    print("Hoàn tất, file output_slope.png đã tạo!")
+        print("Hoàn tất, file output_slope.png đã tạo!")
+    except Exception as e:
+        print(e)
 
     return block_pairs, count, angle_degs
+
+

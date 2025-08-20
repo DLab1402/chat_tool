@@ -4,10 +4,10 @@ import numpy as np
 from main import detect_slope
 
 layers_to_check = [
-    "xref_bct2_tong the$0$QH_DAT_CTHTKT_DuongGT",
-    "xref_bct2_tong the$0$QHDH_DAT_CTHTKT_DuongGT_CH",
-    "xref_bct2_tong the$0$00-HACTH",
-    "Text_GT",
+    "DAT_CTHTKT_DuongGT",
+    "QH_HTKT_HatchGTNB",
+    "00-HACTH",
+    "QH_KH_CaoDoThietKe",
 ] 
 
 input_folder = os.path.join(os.getcwd(), "input")

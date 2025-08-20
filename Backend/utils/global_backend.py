@@ -58,9 +58,9 @@ layers_rg_qh_2 = ['QH_Xref_TongThe$0$BV_Rg_lapquyhoach']
 layer_GTNB_2 = "QH_Xref_TongThe$0$DAT_CTHTKT_DuongGT"
 #layers task 5
 layers_to_check_5 = [
-    "QH_Xref_TongThe$0$DAT_CTHTKT_DuongGT",
-    "QH_Xref_TongThe$0$ QH_HTKT_HatchGTNB",
-    "QH_Xref_TongThe$0$00-HACTH",
+    "DAT_CTHTKT_DuongGT",
+    "QH_HTKT_HatchGTNB",
+    "00-HACTH",
     "QH_KH_CaoDoThietKe",
 ] 
 #layers task 6
